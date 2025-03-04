@@ -13,7 +13,7 @@ license: MIT
 
 ---
 
-![logo_img](img/logo.png)
+![logo_img](img/AFRL.png)
 
 ## TODO
   - Document
