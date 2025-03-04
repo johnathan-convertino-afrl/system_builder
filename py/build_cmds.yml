@@ -1,0 +1,36 @@
+################################################################################
+##  file: build_cmds.yml
+##  author: Jay Convertino
+##  Info: There are keyboards that are autopopulated. They are as follows.
+##  - _project_name = target name (targets become projects to build, yeah meh).
+##  - _pwd = current root path to the repository
+##  - __CWD__ = use everthing after this define as the current working directory
+##    for the subprocess popen command (defaults to directory build_cmds launched from)
+##  - __ENV_PATH__ = add this path to the list of environments subprocess will search.
+##  - __CHECK_SKIP__ = skip this command if a file or directory exists at the path specified
+##    after this define.
+##  - {SOMETHING} = a value to fill in from the build.yml file that describes
+##    actions for the command
+################################################################################
+fusesoc:
+  cmd_0: ["__CHECK_SKIP__{_pwd}/output/hdl/{_project_name}/AFRL_project_veronica_axi_baremetal_1.0.0.bit"]
+  cmd_1: ["fusesoc", "--cores-root", "{path}", "run", "--build", "--work-root", "output/hdl/{_project_name}", "--target", "{target}", "{project}"]
+script:
+  cmd_1: ["{exec}", "{file}", "{_project_name}", "{args}"]
+gcc_riscv32:
+  cmd_0: ["__CHECK_SKIP__{_pwd}/output/bin/riscv/bin/riscv32-unknown-elf-gcc"]
+  cmd_1: ["make", "-C", "{_pwd}/{path}", "clean"]
+  cmd_2: ["__CWD__{_pwd}/{path}", "./configure", "--prefix={_pwd}/output/bin/riscv", "--disable-linux", "--with-arch=rv32imac", "--with-abi-ilp32"]
+  cmd_3: ["make", "-C", "{_pwd}/{path}", "-j", "8"]
+openocd_riscv:
+  cmd_0: ["__CHECK_SKIP__{_pwd}/output/bin/openocd/bin/openocd"]
+  #cmd_1: ["__CWD__{_pwd}/{path}", "git", "apply", "--ignore-whitespace", "../patch/pmpregs.patch"]
+  cmd_2: ["__CWD__{_pwd}/{path}", "./bootstrap"]
+  cmd_3: ["__CWD__{_pwd}/{path}", "./configure", "--prefix={_pwd}/output/bin/openocd", "--enable-ftdi", "--enable-dummy", "--enable-jtag_vpi"]
+  cmd_4: ["make", "-C", "{_pwd}/{path}", "-j", "8"]
+  cmd_5: ["make", "install", "-C", "{_pwd}/{path}"]
+fpga_baremetal_examples:
+  cmd_0: ["__CHECK_SKIP__{_pwd}/output/apps"]
+  cmd_1: ["mkdir", "-p", "{_pwd}/{path}/cmake"]
+  cmd_2: ["__CWD__{_pwd}/{path}/cmake", "__ENV_PATH__{_pwd}/output/bin/riscv/bin/", "cmake", "../", "-DCMAKE_RUNTIME_OUTPUT_DIRECTORY={_pwd}/output/apps", "-DCMAKE_PREFIX_PATH={_pwd}/output/bin/riscv/bin/", "-DBUILD_EXAMPLES_ALL=ON", "-DCMAKE_TOOLCHAIN_FILE={_pwd}/{path}/arch/riscv/riscv.cmake"]
+  cmd_3: ["__ENV_PATH__{_pwd}/output/bin/riscv/bin/", "make", "-C", "{_pwd}/{path}/cmake"]

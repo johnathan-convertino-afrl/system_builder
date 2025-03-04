@@ -1,0 +1,134 @@
+################################################################################
+## file: build.yml
+## author: Jay Convertino
+## info: Contains all build targets in with following format and atributes
+## Order is from the top of this document, to the bottom. Same for Parts.
+## - concurrent = any parts (commands) that will be run at the same time.
+## - sequential = parts are run one at a time from top to bottom.
+################################################################################
+
+## FMCOMMS2-3
+zed_fmcomms2-3_linux_busybox_sdcard:
+  concurrent:
+    fusesoc: &fusesoc_fmcomms2-3
+      path: hdl
+      project: AFRL:project:fmcomms2-3:1.0.0
+      target: zed_bootgen
+    buildroot: &buildroot_fmcomms2-3
+      path: sw/linux/buildroot-afrl
+      config: zynq_zed_ad_fmcomms2-3_defconfig
+  sequential:
+    script: &output_files_fmcomms2-3
+      exec: python
+      file: py/output_gen.py
+      args: "--rootfs output/linux --bootfs output/hdl --dest output/sdcard"
+    genimage:
+      path: img_cfg
+zc702_fmcomms2-3_linux_busybox_sdcard:
+  concurrent:
+    fusesoc:
+      <<: *fusesoc_fmcomms2-3
+      target: zc702_bootgen
+    buildroot:
+      <<: *buildroot_fmcomms2-3
+      config: zynq_zc702_ad_fmcomms2-3_defconfig
+  sequential:
+    script:
+      <<: *output_files_fmcomms2-3
+    genimage:
+      path: img_cfg
+zc706_fmcomms2-3_linux_busybox_sdcard:
+  concurrent:
+    fusesoc:
+      <<: *fusesoc_fmcomms2-3
+      target: zc706_bootgen
+    buildroot:
+      <<: *buildroot_fmcomms2-3
+      config: zynq_zc706_ad_fmcomms2-3_defconfig
+  sequential:
+    script:
+      <<: *output_files_fmcomms2-3
+    genimage:
+      path: img_cfg
+zcu102_fmcomms2-3_linux_busybox_sdcard:
+  concurrent:
+    fusesoc:
+      <<: *fusesoc_fmcomms2-3
+      target: zcu102_bootgen
+    buildroot:
+      <<: *buildroot_fmcomms2-3
+      config: zynqmp_zcu102_ad_fmcomms2-3_defconfig
+  sequential:
+    script:
+      <<: *output_files_fmcomms2-3
+    genimage:
+      path: img_cfg
+a10soc_fmcomms2-3_linux_busybox_sdcard:
+  concurrent:
+    fusesoc:
+      <<: *fusesoc_fmcomms2-3
+      target: a10soc_bootgen
+    buildroot:
+      <<: *buildroot_fmcomms2-3
+      config: arria10_a10soc_ad_fmcomms2-3_defconfig
+  sequential:
+    script:
+      <<: *output_files_fmcomms2-3
+    genimage:
+      path: img_cfg
+hanpilot_fmcomms2-3_linux_busybox_sdcard:
+  concurrent:
+    fusesoc:
+      <<: *fusesoc_fmcomms2-3
+      target: hanpilot_bootgen
+    buildroot:
+      <<: *buildroot_fmcomms2-3
+      config: arria10_hanpilot_ad_fmcomms2-3_defconfig
+  sequential:
+    script:
+      <<: *output_files_fmcomms2-3
+    genimage:
+      path: img_cfg
+## FMCOMMS5
+zc702_fmcomms5_linux_busybox_sdcard:
+  concurrent:
+    fusesoc: &fusesoc_fmcomms5
+      path: hdl
+      project: AFRL:project:fmcomms5:1.0.0
+      target: zc702_bootgen
+    buildroot: &buildroot_fmcomms5
+      path: sw/linux/buildroot-afrl
+      config: zynq_zc702_ad_fmcomms5_defconfig
+  sequential:
+    script: &output_files_fmcomms5
+      exec: python
+      file: py/output_gen.py
+      args: "--rootfs output/linux --bootfs output/hdl --dest output/sdcard"
+    genimage:
+      path: img_cfg
+zc706_fmcomms5_linux_busybox_sdcard:
+  concurrent:
+    fusesoc:
+      <<: *fusesoc_fmcomms5
+      target: zc706_bootgen
+    buildroot:
+      <<: *buildroot_fmcomms5
+      config: zynq_zc706_ad_fmcomms5_defconfig
+  sequential:
+    script:
+      <<: *output_files_fmcomms5
+    genimage:
+      path: img_cfg
+zcu102_fmcomms5_linux_busybox_sdcard:
+  concurrent:
+    fusesoc:
+      <<: *fusesoc_fmcomms5
+      target: zcu102_bootgen
+    buildroot:
+      <<: *buildroot_fmcomms5
+      config: zynqmp_zcu102_ad_fmcomms5_defconfig
+  sequential:
+    script:
+      <<: *output_files_fmcomms5
+    genimage:
+      path: img_cfg
