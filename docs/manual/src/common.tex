@@ -1,0 +1,65 @@
+\begin{titlepage}
+  \begin{center}
+
+  {\Huge system builder}
+
+  \vspace{25mm}
+
+  \includegraphics[width=0.90\textwidth,height=\textheight,keepaspectratio]{img/AFRL.png}
+
+  \vspace{25mm}
+
+  \today
+
+  \vspace{15mm}
+
+  {\Large Jay Convertino}
+
+  \end{center}
+\end{titlepage}
+
+\tableofcontents
+
+\newpage
+
+\section{Usage}
+
+\subsection{Introduction}
+
+\par
+System build is a library that will parse a yaml project file, and a yaml command
+file to generate a list of commands to execute in threads. These can be concurrent
+or singular in fashion.
+
+\subsection{Dependencies}
+
+\par
+The following are the dependencies of the cores.
+
+\begin{itemize}
+  \item python 3.X
+  \item python progressbar
+  \item python git (creator)
+\end{itemize}
+
+\subsection{Example}
+\par
+The file creator.py is an example piece of code for building a project.
+\begin{lstlisting}[language=Python]
+import system.build
+
+print(f'FUTURE CODE HERE')
+
+\end{lstlisting}
+
+\section{Code Documentation} \label{Code Documentation}
+
+\par
+Natural docs is used to generate documentation for this project. The next lists the following sections.
+
+\begin{itemize}
+\item \textbf{init} python init code\\
+\item \textbf{builder} system builder library.\\
+\item \textbf{creator} system builder example code.\\
+\end{itemize}
+

@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("_ba",["Function"],[["_bar_thread",,[["bob",,,,0,"File:builder.py:bob._bar_thread","PythonClass:bob:_bar_thread"]]]]);

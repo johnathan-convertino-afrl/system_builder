@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
-################################################################################
-# @file   builder.py
-# @author Jay Convertino(johnathan.convertino.1@us.af.mil)
-# @date   2024.04.22
-# @brief  parse yaml file to execute build tools
+#******************************************************************************
+# file:    builder.py
+#
+# author:  JAY CONVERTINO
+#
+# date:    2025/03/08
+#
+# about:   Brief
+# parse yaml file to execute build tools
 #
 # @license MIT
-# Copyright 2024 Jay Convertino
+# Copyright 2025 Jay Convertino
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to
@@ -25,7 +29,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
-################################################################################
+#******************************************************************************
 import yaml
 import subprocess
 import os
@@ -37,6 +41,8 @@ import threading
 import re
 import time
 
+from .version import __version__
+
 try:
   import progressbar
 except ImportError:
@@ -45,6 +51,8 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
+# Class: bob
+# bob is the builder class for generating systems based on build scripting
 class bob:
   def __init__(self, yaml_build_cmds_file, yaml_data, target = None, dryrun = False):
     self._yaml_data = yaml_data
@@ -61,6 +69,8 @@ class bob:
     self._items_done = 0
     self._project_name = "None"
 
+  # Function: stop
+  # Stop all current builds
   def stop(self):
     self._failed = True
 
@@ -70,6 +80,7 @@ class bob:
 
     logger.info(f"Thread terminate sent to stop builders.")
 
+  # Function: run
   # run the steps to build parts of targets
   def run(self):
     try:
@@ -84,6 +95,8 @@ class bob:
       self._execute()
     except Exception as e: raise
 
+  # Function: list
+  # Print a list of all the parsed build commands.
   def list(self):
     try:
       self._gen_build_cmds()
@@ -107,6 +120,8 @@ class bob:
 
       print(f"COMMAND: {tool:<16} OPTIONS: {filter_options}")
 
+  # Function: _gen_build_cmds
+  # Internal function that will load the yaml file that contains build commands.
   def _gen_build_cmds(self):
     try:
       stream = open(self._yaml_build_cmds_file, 'r')
@@ -126,8 +141,10 @@ class bob:
 
     stream.close()
 
-  # create dict of dicts that contains lists with lists of lists to execute with subprocess
-  # {'project': { 'concurrent': [[["make", "def_config"], ["make"]], [["fusesoc", "run", "--build", "--target", "zed_blinky", "::blinky:1.0.0"]]], 'sequential': [[]]}}
+  # Function: _process
+  # Create dict of dicts that contains lists with lists of lists to execute with subprocess
+  # {'project': { 'concurrent': [[["make", "def_config"], ["make"]], [["fusesoc", "run",
+  # "--build", "--target", "zed_blinky", "::blinky:1.0.0"]]], 'sequential': [[]]}}
   def _process(self):
 
     if self._command_template is None:
@@ -179,8 +196,9 @@ class bob:
 
       logger.info(f"Added commands for project: {project}")
 
-  #call subprocess as a thread and add it to a list of threads for wait to check on.
-  #iterate over projects avaiable and execute commands per project
+  # Function: _execute
+  # Call subprocess as a thread and add it to a list of threads for wait to check on.
+  # iterate over projects avaiable and execute commands per project
   def _execute(self):
     if self._projects == None:
       raise Exception("NO PROJECTS AVAILABLE FOR BUILDER")
@@ -238,6 +256,9 @@ class bob:
 
       bar_thread.join()
 
+  # Function: _subprocess
+  # Responsible for taking a list of commands and launching threads concurrently
+  # or singurely.
   def _subprocess(self, list_of_commands):
 
     for command in list_of_commands:
@@ -312,6 +333,8 @@ class bob:
 
         logger.info(f"Completed command: {' '.join(command)}")
 
+  # Function: _project_cmd_count
+  # Number of commands in a project.
   def _project_cmd_count(self, run_types):
     count = 0
 
@@ -321,6 +344,8 @@ class bob:
 
     return count
 
+  # Function: _thread_exception
+  # Used to kill all threads once one has failed.
   def _thread_exception(self, args):
     self._failed = True
 
@@ -330,6 +355,8 @@ class bob:
 
     logger.error(f"Build failed, terminated subprocess and program. {str(args.exc_value)}")
 
+  # Function: _bar_thread
+  # Creates progress bar display in terminal for end user display.
   def _bar_thread(self):
     status = "BUILDING"
     bar = progressbar.ProgressBar(widgets=[progressbar.Timer(format=' [%(elapsed)s] '), progressbar.Percentage(), " ", progressbar.GranularBar(markers='.#', left='[', right='] '), progressbar.Variable('Status'), " | ", progressbar.Variable('Target')], max_value=self._items).start()

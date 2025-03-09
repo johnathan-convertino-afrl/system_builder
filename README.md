@@ -1,6 +1,8 @@
 # AFRL System Builder
 ### Python System Builder for Projects
 
+![logo_img](docs/manual/img/AFRL.png)
+
 ---
 
 author: Jay Convertino
@@ -13,20 +15,24 @@ license: MIT
 
 ---
 
-![logo_img](img/AFRL.png)
-
 ## TODO
   - Document
 
 ## Quick Info
   - Document
 
-## Release Versions
+## Version
 ### Current
   - none
 
 ### Past
   - none
+
+### DOCUMENTATION
+  For detailed usage information, please navigate to one of the following sources. They are the same, just in a different format.
+
+  - [system_builder.pdf](docs/manual/system_builder.pdf)
+  - [github page](https://johnathan-convertino-afrl.github.io/system_builder/)
 
 ## Requirements
 ### system_build.py

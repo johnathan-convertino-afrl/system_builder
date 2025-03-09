@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("mit",["Information"],[["MIT",,[[,"License MIT",,,0,"File:__init__.py:License_MIT"]]]]);

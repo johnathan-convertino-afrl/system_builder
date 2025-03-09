@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
-################################################################################
-# @file   system_builder.py
-# @author Jay Convertino(johnathan.convertino.1@us.af.mil)
-# @date   2024.04.17
-# @brief  Build various projects using builder object to parse and execute parts
+#*******************************************************************************
+# file:    creator.py
+#
+# author:  JAY CONVERTINO
+#
+# date:    2025/03/08
+#
+# about:   Brief
+# Example program for using system.builder library.
 #
 # @license MIT
-# Copyright 2024 Jay Convertino
+# Copyright 2025 Jay Convertino
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to
@@ -25,7 +29,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
-################################################################################
+#*******************************************************************************
 
 import yaml
 import subprocess
@@ -46,12 +50,13 @@ except ImportError:
   print("REQUIREMENT MISSING: gitpython, pip install gitpython")
   exit(0)
 
-sys.path.append("./py/")
+sys.path.append("../")
 
 sys.dont_write_bytecode = True
 
-import builder
+import system.builder
 
+# Function: main
 # main execution function
 def main():
   args = parse_args(sys.argv[1:])
@@ -107,6 +112,8 @@ def main():
 
   exit(0)
 
+# Function: list_deps
+# open deps text file and print all executable names.
 def list_deps(deps_file):
   try:
     deps = open(deps_file, 'r')
@@ -124,7 +131,8 @@ def list_deps(deps_file):
 
   return 0
 
-#check each line of txt file programs
+# Function: deps_check
+# Check each line of txt file programs
 def deps_check(deps_file):
   try:
     deps = open(deps_file, 'r')
@@ -146,16 +154,15 @@ def deps_check(deps_file):
 
   print("Checking for dependencies complete.")
 
-# make sure submodules have been pulled. If not, pull them.
+# Function: submodule_init
+# Make sure submodules have been pulled. If not, pull them.
 def submodule_init(repo):
   repo = git.Repo(repo)
 
   print("Checking for submodules...")
 
   for submodule in repo.submodules:
-    submodule.update(init=True, recursive=True)
-    sub_repo = submodule.module()
-    sub_repo.git.reset(hard=True)
+    submodule.update(init=True, force=True, recursive=True, keep_going=True)
 
   print("Checking for submodules complete.")
 
@@ -166,7 +173,8 @@ def submodule_init(repo):
     # if len(submodule.children()):
     #   submodule_init(submodule)
 
-# open the yaml file for processing
+# open_yaml
+# Open the yaml file for processing
 def open_yaml(file_name):
   try:
     stream = open(file_name, 'r')
@@ -187,6 +195,7 @@ def open_yaml(file_name):
   stream.close()
   return yaml_data
 
+# Function: list_projects
 # List projects from the yaml file.
 def list_projects(yaml, file_name):
   if not len(yaml):
@@ -199,6 +208,7 @@ def list_projects(yaml, file_name):
 
   return 0
 
+# Function: clean
 # Clean up folders used for output (output and log)
 def clean():
   print("********************************")
@@ -222,7 +232,8 @@ def clean():
 
   return 0
 
-# parse args for tuning build
+# Function: parse_args
+# Parse args for tuning build
 def parse_args(argv):
   parser = argparse.ArgumentParser(description='Automate projects build using yaml target list.')
 
@@ -243,7 +254,8 @@ def parse_args(argv):
 
   return parser.parse_args()
 
-# setup logger for log file
+# Function: logger_setup
+# Setup logger for log file
 def logger_setup(debug):
   log_name = time.strftime("log/" + "%y%m%d", time.localtime()) + '_' +  str(int(time.mktime(time.localtime()))) + '.log'
 
@@ -267,6 +279,6 @@ def logger_setup(debug):
   logger.addHandler(log_file)
 
 
-# name is main is main
+# name of main is main
 if __name__=="__main__":
   main()

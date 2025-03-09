@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("log",["Function"],[["logger_setup",,[[,,,,0,"File2:creator.py:logger_setup"]]]]);

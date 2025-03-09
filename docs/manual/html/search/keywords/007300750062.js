@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("sub",["Function"],[["submodule_init",,[[,,,,0,"File2:creator.py:submodule_init"]]]]);

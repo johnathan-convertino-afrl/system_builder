@@ -1,0 +1,23 @@
+\documentclass[usletter]{article}
+\usepackage{DejaVuSans}
+\renewcommand*\familydefault{\sfdefault}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{listings}
+\lstset{
+  breaklines=true,
+  postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+}
+\usepackage{pdfpages}
+\usepackage[hidelinks]{hyperref}
+\begin{document}
+
+  \include{src/common.tex}
+
+  %module documentation section
+
+  \includepdf[pages=-, addtotoc={1,subsection,1,init,p1}, pagecommand={}]{files___init__-py.pdf}
+  \includepdf[pages=-, addtotoc={1,subsection,1,builder,p1}, pagecommand={}]{files_builder-py.pdf}
+  \includepdf[pages=-, addtotoc={1,subsection,1,creator,p1}, pagecommand={}]{files2_creator-py.pdf}
+
+\end{document}
