@@ -51,55 +51,24 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
-# Class: bob
-# bob is the builder class for generating systems based on build scripting
-class bob:
-  def __init__(self, yaml_build_cmds_file, yaml_data, target = None, dryrun = False):
-    self._yaml_data = yaml_data
-    self._yaml_build_cmds_file = yaml_build_cmds_file
+# Class: commandCompiler
+# Parse yaml files into commands for command executor
+class commandCompiler:
+  # Method: __init__
+  # Setup class
+  def __init__(self, yaml_cmds = None, yaml_projects = None, target = None):
+    self._yaml_cmds = yaml_cmds
+    self._yaml_projects = yaml_projects
     self._target = target
-    self._dryrun = dryrun
     self._command_template = None
+    self._project_template = None
     self._projects = None
-    self._threads  = []
-    self._processes = []
-    self._failed = False
-    self._thread_lock = None
-    self._items = 0
-    self._items_done = 0
-    self._project_name = "None"
 
-  # Function: stop
-  # Stop all current builds
-  def stop(self):
-    self._failed = True
-
-    if self._dryrun is False:
-      for p in self._processes:
-        p.terminate()
-
-    logger.info(f"Thread terminate sent to stop builders.")
-
-  # Function: run
-  # run the steps to build parts of targets
-  def run(self):
+  # Method: listCmds
+  # Print a list of all the commands available
+  def listCmds(self):
     try:
-      self._gen_build_cmds()
-    except Exception as e: raise
-
-    try:
-      self._process()
-    except Exception as e: raise
-
-    try:
-      self._execute()
-    except Exception as e: raise
-
-  # Function: list
-  # Print a list of all the parsed build commands.
-  def list(self):
-    try:
-      self._gen_build_cmds()
+      self._command_template = self._load_yaml(self._yaml_cmds)
     except Exception as e: raise
 
     print('\n' + f"AVAILABLE YAML COMMANDS FOR BUILD" + '\n')
@@ -120,28 +89,90 @@ class bob:
 
       print(f"COMMAND: {tool:<16} OPTIONS: {filter_options}")
 
-  # Function: _gen_build_cmds
-  # Internal function that will load the yaml file that contains build commands.
-  def _gen_build_cmds(self):
+  # Method: listProjects
+  # Print a list of all the
+  def listProjects(self):
     try:
-      stream = open(self._yaml_build_cmds_file, 'r')
+      self._project_tempate = self._load_yaml(self._yaml_projects)
     except Exception as e: raise
 
-    loaded = None
+    print('\n' + f"SYSTEM BUILDER TARGETS FROM {file_name.upper()}" + '\n')
+
+    for target, value in self._project_tempate.items():
+      print(f"TARGET: {target}")
+
+  # Method: clear
+  # Clear results of create and current yaml file pointer.
+  def clear(self):
+    self._yaml_cmds = None
+    self._yaml_projects = None
+    self._command_template = None
+    self._projects = None
+
+  # Method: setProjects
+  # Set a yaml file for project commands
+  def setProjects(self, yaml_projects):
+    self._yaml_projects = yaml_projects
+
+  # Method: setCmds
+  # Set a yaml file for commands available
+  def setCmds(self, yaml_cmds):
+    self._yaml_cmds = yaml_cmds
+
+  # Method: create
+  # Pass a yaml file to use for processing into format for commandExecutor.
+  def create(self, yaml_cmds = None, yaml_projects = None, target = None):
+    if(yaml_cmds is None and self._yaml_cmds is None):
+      raise TypeError(f"{self.__class__.__name__:<24} : YAML COMMANDS FILE HAS NOT BEEN SET")
+
+    if(yaml_projects is None and self._yaml_projects is None):
+      raise TypeError(f"{self.__class__.__name__:<24} : YAML BUILD FILE HAS NOT BEEN SET")
+
+    if(yaml_cmds is not None):
+      self._yaml_cmds = yaml_cmds
+
+    if(yaml_projects is not None):
+      self._yaml_projects = yaml_projects
+
+    if(target is not None):
+      self._target = target
 
     try:
-      loaded = yaml.safe_load(stream)
-    except Exception as e:
-      stream.close()
-      raise
+      self._command_template = self._load_yaml(self._yaml_cmds)
+    except Exception as e: raise
 
-    self._command_template = loaded
+    try:
+      self._project_template = self._load_yaml(self._yaml_projects)
+    except Exception as e: raise
 
-    logger.debug(self._command_template)
+    try:
+      self._checkTarget()
+    except Exception as e: raise
 
-    stream.close()
+    try:
+      self._process()
+    except Exception as e: raise
 
-  # Function: _process
+  # Method: getResult
+  # Return dict of dicts that contains lists with lists of lists to execute with subprocess
+  # {'project': { 'concurrent': [[["make", "def_config"], ["make"]], [["fusesoc", "run",
+  # "--build", "--target", "zed_blinky", "::blinky:1.0.0"]]], 'sequential': [[]]}}
+  def getResult(self):
+    if(self._projects is None):
+      raise ValueError(f"{self.__class__.__name__:<24} : PROJECTS IS NONE, RUN CREATE BEFORE TRYING TO GET RESULTS.")
+
+    return self._projects
+
+  # Method: _checkTarget
+  def _checkTarget(self):
+    #filter target into updated dictionary if it was selected
+    if self._target != None:
+      try:
+        self._yaml_projects = {self._target: self._yaml_projects[self._target]}
+      except KeyError:
+        raise Exception(f"{self.__class__.__name__:<24} : TARGET : {target}, DOES NOT EXIST.")
+
+  # Method: _process
   # Create dict of dicts that contains lists with lists of lists to execute with subprocess
   # {'project': { 'concurrent': [[["make", "def_config"], ["make"]], [["fusesoc", "run",
   # "--build", "--target", "zed_blinky", "::blinky:1.0.0"]]], 'sequential': [[]]}}
@@ -150,16 +181,11 @@ class bob:
     if self._command_template is None:
       raise Exception("Command template is None")
 
-    #filter target into updated dictionary if it was selected
-    if self._target != None:
-      try:
-        self._yaml_data = { self._target: self._yaml_data[self._target]}
-      except KeyError:
-        raise Exception(f"Target: {self._target}, does not exist.")
+    _checkTarget()
 
     self._projects = {}
 
-    for project, parts in self._yaml_data.items():
+    for project, parts in self._project_template.items():
       project_run_type = {}
 
       for run_type, part in parts.items():
@@ -169,7 +195,7 @@ class bob:
           try:
             command_template = self._command_template[part].values()
           except KeyError:
-            raise Exception(f"No build rule for part: {part}.")
+            raise Exception(f"{self.__class__.__name__:<24} : NO BUILD RULE FOR PART: {part}.")
 
           command.update({'_pwd' : os.getcwd()})
 
@@ -190,25 +216,111 @@ class bob:
 
           project_parts.append(part_commands)
 
-        project_run_type[run_type] = project_parts
+        project_run_type[run_type] = proself._gen_build_cmds()ject_parts
 
       self._projects[project] = project_run_type
 
-      logger.info(f"Added commands for project: {project}")
+      logger.info(f"{self.__class__.__name__:<24} : Added Commands For Project: {project}")
 
-  # Function: _execute
-  # Call subprocess as a thread and add it to a list of threads for wait to check on.
+  # Method: _load_yaml
+  # Internal function that will load the yaml file that contains project commands or commands.
+  def _load_yaml(self, yaml_file):
+    try:
+      stream = open(yaml_file, 'r')
+    except Exception as e: raise
+
+    loaded = None
+
+    try:
+      loaded = yaml.safe_load(stream)
+    except Exception as e:
+      stream.close()
+      raise
+
+    logger.debug(loaded)
+
+    stream.close()
+
+    return loaded
+
+# Class: commandExecutor
+# Execute commands create from commandCompileris not a valid selection
+class commandExecutor:
+  def __init__(self, projects = None, dryrun = False):
+    self.clear()
+    self._projects = projects
+    self._dryrun = dryrun
+
+  # Method: clear
+  # Clear state of commandExecutor to init with no values passed
+  def clear(self):
+    if(self.completed or self.failed):
+      self._projects = Noneself._gen_build_cmds()
+      self._failed = False
+      self._threads.clear()
+      self._processes.clear()
+      self._thread_lock = None
+      self._dryrun = False
+      self._items = 0
+      self._items_done = 0
+      self._project_name = "None"
+    else:
+      raise RuntimeError(f"{self.__class__.__name__:<24} : CAN NOT CLEAR WHILE ITEMS ARE NOT COMPLETE OR EXECUTOR HAS NOT FAILED")
+
+  # Method: completed
+  # return a bool if all items have been completed.
+  def completed(self):
+    return self._items == self._items_done
+
+  # Method: failed
+  # return a bool indicating failure
+  def failed(self):
+    return self._failed
+
+  # Method: stop
+  # Kill and current processes in build threads
+  def stop(self):
+    self._failed = True
+
+    if self._dryrun is False:
+      for p in self._processes:
+        p.kill()
+
+    logger.info(f"{self.__class__.__name__:<24} : Thread kill sent to stop builders.")
+
+  # Method: setDryrun
+  # Setting to True sets the project run everything up to the subprocess.Popen call, which is skipped.
+  def setDryrun(dryrun = False):
+    self._dryrun = dryrun
+
+  # Method: setProjects
+  # Set the projects for the executor to build
+  def setProjects(self, projects):
+    self._projects = projects
+
+  # Method: runProject
+  # Call the internal execute method to start calling up each of the projects to build.
+  def runProject(self, projects = None):
+    if(self._projects is None and projects is None):
+      raise ValueError(f"{self.__class__.__name__:<24} : NO PROJECT(S) ARE AVAILABLE TO RUN")
+
+    try:
+      self._execute()
+    except Exception as e: raise
+
+  # Method: _execute
+  # Call subprocess as a thread an_gen_build_cmdsd add it to a list of threads for wait to check on.
   # iterate over projects avaiable and execute commands per project
   def _execute(self):
     if self._projects == None:
-      raise Exception("NO PROJECTS AVAILABLE FOR BUILDER")
+      raise Exception(f"{self.__class__.__name__:<24} : NO PROJECTS AVAILABLE FOR BUILDER")
 
     threading.excepthook = self._thread_exception
 
     self._thread_lock = threading.Lock()
 
     for project, run_types in self._projects.items():
-      logger.info(f"Starting build for project: {project}")
+      logger.info(f"{self.__class__.__name__:<24} : Starting build for project: {project}")
 
       self._items = self._project_cmd_count(run_types)
 
@@ -238,7 +350,7 @@ class bob:
             t.join()
 
           if self._failed:
-            raise Exception(f"One or more threads failed.")
+            raise Exception(f"{self.__class__.__name__:<24} : ONE OR MORE THREADS FAILED.")
 
         elif run_type == 'sequential':
           for command_list in commands:
@@ -252,11 +364,11 @@ class bob:
               raise
 
         else:
-          raise Exception(f"RUN_TYPE {run_type} is not a valid selection")
+          raise Exception(f"{self.__class__.__name__:<24} : RUN_TYPE {run_type} IS NOT A VALID SELECTION")
 
       bar_thread.join()
 
-  # Function: _subprocess
+  # Method: _subprocess
   # Responsible for taking a list of commands and launching threads concurrently
   # or singurely.
   def _subprocess(self, list_of_commands):
@@ -290,7 +402,7 @@ class bob:
 
               time.sleep(1)
 
-              logger.info(f"Command skipped, following exists: {check_item}")
+              logger.info(f"{self.__class__.__name__:<24} : Command skipped, following exists: {check_item}")
 
               return
           else:
@@ -301,9 +413,9 @@ class bob:
         continue
 
       if self._failed:
-        raise Exception(f"Previous build process failed, aborting: {' '.join(command)}")
+        raise Exception(f"{self.__class__.__name__:<24} : PREVIOUS BUILD PROCESS FAILED, ABORTING : {' '.join(command)}")
 
-      logger.info(f"Executing command: {' '.join(command)}")
+      logger.info(f"{self.__class__.__name__:<24} : Executing command: {' '.join(command)}")
 
       if self._dryrun is False:
         try:
@@ -316,7 +428,7 @@ class bob:
               for line in cmd_error.split('\n'):
                 if len(line):
                   logger.error(line)
-            raise Exception(f"Issue executing command: {' '.join(command)}")
+            raise Exception(f"{self.__class__.__name__:<24} : ISSUE EXECUTING COMMAND : {' '.join(command)}")
         except Exception as e: raise
 
         if cmd_output:
@@ -331,9 +443,9 @@ class bob:
 
         time.sleep(1)
 
-        logger.info(f"Completed command: {' '.join(command)}")
+        logger.info(f"{self.__class__.__name__:<24} : Completed Command : {' '.join(command)}")
 
-  # Function: _project_cmd_count
+  # Method: _project_cmd_count
   # Number of commands in a project.
   def _project_cmd_count(self, run_types):
     count = 0
@@ -344,24 +456,24 @@ class bob:
 
     return count
 
-  # Function: _thread_exception
+  # Method: _thread_exception
   # Used to kill all threads once one has failed.
   def _thread_exception(self, args):
     self._failed = True
 
     if self._dryrun is False:
       for p in self._processes:
-        p.terminate()
+        p.kill()
 
-    logger.error(f"Build failed, terminated subprocess and program. {str(args.exc_value)}")
+    logger.error(f"{self.__class__.__name__:<24} : BUILD FAILED, TERMINATED SUBPROCESS AND PROGRAM. {str(args.exc_value)}")
 
-  # Function: _bar_thread
+  # Method: _bar_thread
   # Creates progress bar display in terminal for end user display.
   def _bar_thread(self):
     status = "BUILDING"
     bar = progressbar.ProgressBar(widgets=[progressbar.Timer(format=' [%(elapsed)s] '), progressbar.Percentage(), " ", progressbar.GranularBar(markers='.#', left='[', right='] '), progressbar.Variable('Status'), " | ", progressbar.Variable('Target')], max_value=self._items).start()
 
-    bar.update(Status=f"{status:^8}")
+    ba_project_namer.update(Status=f"{status:^8}")
 
     while((self._items_done < self._items) and (self._failed == False)):
       time.sleep(0.1)
@@ -373,6 +485,30 @@ class bob:
     else:
       status = "SUCCESS"
 
-    bar.update(Status=f"{status:^8}")
+    bar.update(Stat_bar_threadus=f"{status:^8}")
     bar.finish(dirty=self._failed)
+
+class commandDependencies:
+  def __init__(self):
+    pass
+
+  def clear(self):
+    pass
+
+  def setList(self, yaml_file):
+    pass
+
+  def check(self):
+    pass
+
+  def result(self):
+    pass
+
+
+
+
+
+
+
+
 

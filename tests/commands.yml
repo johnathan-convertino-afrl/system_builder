@@ -1,11 +1,11 @@
 ################################################################################
-##  file: build_cmds.yml
+##  file: commands.yml
 ##  author: Jay Convertino
 ##  Info: There are keyboards that are autopopulated. They are as follows.
 ##  - _project_name = target name (targets become projects to build, yeah meh).
 ##  - _pwd = current root path to the repository
 ##  - __CWD__ = use everthing after this define as the current working directory
-##    for the subprocess popen command (defaults to directory build_cmds launched from)
+##    for the subprocess popen command (defaults to the directory commands was launched from)
 ##  - __ENV_PATH__ = add this path to the list of environments subprocess will search.
 ##  - __CHECK_SKIP__ = skip this command if a file or directory exists at the path specified
 ##    after this define.

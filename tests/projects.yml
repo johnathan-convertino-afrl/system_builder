@@ -1,7 +1,7 @@
 ################################################################################
-## file: build.yml
+## file: projects.yml
 ## author: Jay Convertino
-## info: Contains all build targets in with following format and atributes
+## info: Contains all projects as targets in with following format and atributes
 ## Order is from the top of this document, to the bottom. Same for Parts.
 ## - concurrent = any parts (commands) that will be run at the same time.
 ## - sequential = parts are run one at a time from top to bottom.

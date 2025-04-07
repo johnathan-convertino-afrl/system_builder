@@ -33,4 +33,4 @@
 
 from .version import __version__
 
-from .builder import bob
+from .builder import commandCompile, commandExecutor, commandDependencies
