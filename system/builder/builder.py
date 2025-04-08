@@ -488,13 +488,6 @@ class commandExecutor:
 
     logger.error(f"{self.__class__.__name__:<24} : BUILD FAILED, TERMINATED SUBPROCESS AND PROGRAM. {str(args.exc_value)}")
 
-  # # Method: _bar_length
-  # # Length of the bar
-  # def _bar_length(self, value):
-  #   logger.info(len(value))
-  #   logger.info(os.get_terminal_size().columns)
-  #   return os.get_terminal_size().columns
-
   # Method: _bar_thread
   # Creates progress bar display in terminal for end user display.
   def _bar_thread(self):
@@ -504,9 +497,8 @@ class commandExecutor:
     bar.update(Status=f"{status:^8}")
 
     while((self._items_done < self._items) and (self._failed == False)):
-      time.sleep(0.1)
-      size = 64#os.get_terminal_size().columns-64
-      bar.update(Target=f"{self._project_name:<{size}}")
+      size = os.get_terminal_size().columns-80
+      bar.update(Target=f"{self._project_name[:size]:<{size}}")
       bar.update(self._items_done)
 
     if self._failed:
