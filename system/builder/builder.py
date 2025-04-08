@@ -140,17 +140,25 @@ class commandCompiler:
     if(target is not None):
       self._target = target
 
+    logger.debug(f'{self.__class__.__name__:<24} : LOADING YAML COMMANDS FILE {self._yaml_commands.upper()}')
+
     try:
       self._command_template = self._load_yaml(self._yaml_commands)
     except Exception as e: raise
+
+    logger.debug(f'{self.__class__.__name__:<24} : LOADING YAML PROJECTS FILE {self._yaml_projects.upper()}')
 
     try:
       self._project_template = self._load_yaml(self._yaml_projects)
     except Exception as e: raise
 
+    logger.debug(f'{self.__class__.__name__:<24} : CHECKING FOR TARGET {self._target}')
+
     try:
       self._checkTarget()
     except Exception as e: raise
+
+    logger.debug(f'{self.__class__.__name__:<24} : PROCESSING YAML PROJECT AND COMMANDS TO CREATE BUILD SCRIPT')
 
     try:
       self._process()
@@ -172,7 +180,7 @@ class commandCompiler:
     #filter target into updated dictionary if it was selected
     if self._target != None:
       try:
-        self._yaml_projects = {self._target: self._yaml_projects[self._target]}
+        self._project_template = {self._target: self._project_template[self._target]}
       except KeyError as e:
         logger.exception(f"{self.__class__.__name__:<24} : TARGET : {target}, DOES NOT EXIST.", exc_info=e)
         raise RuntimeError("TARGET IS INVALID")
@@ -196,6 +204,7 @@ class commandCompiler:
         project_parts = []
 
         for part, command in part.items():
+
           try:
             command_template = self._command_template[part].values()
           except KeyError as e:
@@ -497,6 +506,10 @@ class commandExecutor:
 
     while((self._items_done < self._items) and (self._failed == False)):
       size = os.get_terminal_size().columns-80
+      if size < 0:
+        self._failed = True
+        break
+
       bar.update(Target=f"{self._project_name[:size]:<{size}}")
       bar.update(self._items_done)
 
