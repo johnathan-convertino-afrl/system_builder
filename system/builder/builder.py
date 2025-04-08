@@ -97,7 +97,7 @@ class commandCompiler:
       self._project_tempate = self._load_yaml(self._yaml_projects)
     except Exception as e: raise
 
-    print('\n' + f"SYSTEM BUILDER TARGETS FROM {file_name.upper()}" + '\n')
+    print('\n' + f"SYSTEM BUILDER TARGETS FROM {self._yaml_projects.upper()}" + '\n')
 
     for target, value in self._project_tempate.items():
       print(f"TARGET: {target}")
