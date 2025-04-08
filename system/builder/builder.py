@@ -120,16 +120,26 @@ class commandCompiler:
   def setCommands(self, yaml_commands):
     self._yaml_commands = yaml_commands
 
+  # Method: setProjectsWithYamlData
+  # Set internal variable with yaml data directly.
+  def setProjectsWithYamlData(self, yaml_data):
+    self._project_template = yaml_data
+
+  # Method: setCommandsWithYamlData
+  # Set internal variable with yaml data directly.
+  def setCommandsWithYamlData(self, yaml_data):
+    self._command_template = yaml_data
+
   # Method: create
   # Pass a yaml file to use for processing into format for commandExecutor.
   def create(self, yaml_projects = None, yaml_commands = None, target = None):
-    if(yaml_commands is None and self._yaml_commands is None):
-      logger.error(f"{self.__class__.__name__:<24} : YAML COMMANDS FILE HAS NOT BEEN SET")
+    if(yaml_commands is None and self._yaml_commands is None and self._command_tempate is None):
+      logger.error(f"{self.__class__.__name__:<24} : YAML COMMANDS HAS NOT BEEN SET")
       raise TypeError("YAML COMMANDS FILE HAS NOT BEEN SET")
 
-    if(yaml_projects is None and self._yaml_projects is None):
-      logger.error(f"{self.__class__.__name__:<24} : YAML BUILD FILE HAS NOT BEEN SET")
-      raise TypeError("YAML BUILD FILE HAS NOT BEEN SET")
+    if(yaml_projects is None and self._yaml_projects is None and self._project_tempate is None):
+      logger.error(f"{self.__class__.__name__:<24} : YAML PROJECTS HAS NOT BEEN SET")
+      raise TypeError("YAML PROJECTS FILE HAS NOT BEEN SET")
 
     if(yaml_commands is not None):
       self._yaml_commands = yaml_commands
@@ -143,13 +153,15 @@ class commandCompiler:
     logger.debug(f'{self.__class__.__name__:<24} : LOADING YAML COMMANDS FILE {self._yaml_commands.upper()}')
 
     try:
-      self._command_template = self._load_yaml(self._yaml_commands)
+      if self._command_template is None:
+        self._command_template = self._load_yaml(self._yaml_commands)
     except Exception as e: raise
 
     logger.debug(f'{self.__class__.__name__:<24} : LOADING YAML PROJECTS FILE {self._yaml_projects.upper()}')
 
     try:
-      self._project_template = self._load_yaml(self._yaml_projects)
+      if self._project_template is None:
+        self._project_template = self._load_yaml(self._yaml_projects)
     except Exception as e: raise
 
     logger.debug(f'{self.__class__.__name__:<24} : CHECKING FOR TARGET {self._target}')
