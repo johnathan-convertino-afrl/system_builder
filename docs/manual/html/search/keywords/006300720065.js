@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("cre",["Function"],[["create",,[["commandCompiler",,,,0,"File:builder.py:commandCompiler.create","PythonClass:commandCompiler:create"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("cre",["Function","File"],[["create",,[["commandCompiler",,,,0,"File:builder.py:commandCompiler.create","PythonClass:commandCompiler:create"]]],["creator",,[[,"creator.py",,,1,"File2:creator.py:creator.py"]]]]);

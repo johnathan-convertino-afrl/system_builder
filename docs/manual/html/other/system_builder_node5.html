@@ -3,7 +3,7 @@
 <!--Converted with LaTeX2HTML 2024 (Released January 1, 2024) -->
 <HTML lang="en">
 <HEAD>
-<TITLE>Example</TITLE>
+<TITLE>Example Creator</TITLE>
 
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
 <META NAME="viewport" CONTENT="width=device-width, initial-scale=1.0">
@@ -11,6 +11,7 @@
 
 <LINK REL="STYLESHEET" HREF="html.css">
 
+<LINK REL="next" HREF="system_builder_node6.html">
 <LINK REL="previous" HREF="system_builder_node4.html">
 <LINK REL="next" HREF="system_builder_node6.html">
 </HEAD>
@@ -27,33 +28,41 @@
 <A
  HREF="system_builder_node4.html">
 <IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A> 
-<A ID="tex2html30"
+<A ID="tex2html36"
   HREF="system_builder_node1.html">
 <IMG WIDTH="65" HEIGHT="24" ALT="contents" SRC="contents.png"></A>  
 <BR>
 <B> Next:</B> <A
- HREF="system_builder_node6.html">Code Documentation</A>
+ HREF="system_builder_node6.html">Example Commands Yaml file</A>
 <B> Up:</B> <A
  HREF="system_builder_node2.html">Usage</A>
 <B> Previous:</B> <A
  HREF="system_builder_node4.html">Dependencies</A>
- &nbsp; <B>  <A ID="tex2html31"
+ &nbsp; <B>  <A ID="tex2html37"
   HREF="system_builder_node1.html">Contents</A></B> 
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
 <H2><A ID="SECTION00023000000000000000">
-Example</A>
+Example Creator</A>
 </H2>
 
 <P>
-The file creator.py is an example piece of code for building a project.
+The creator is responsable for instantiating the library, preparing the project, and launching the system builder library to build the project.
 <TABLE FRAME="VOID" CELLPADDING="4"><TR><TD>
 <PRE>
-import system.build
+from system.build import *
 
-print(f'FUTURE CODE HERE')
+cmd_compiler = commandCompiler("projects.yml", "commands.yml")
+
+cmd_compiler.create()
+
+projects = cmd_compiler.getResult()
+
+cmd_exec = commandExecutor(projects, args.dryrun)
+
+cmd_exec.runProject()
 </PRE>
 </TD></TR></TABLE>
 

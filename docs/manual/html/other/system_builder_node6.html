@@ -3,7 +3,7 @@
 <!--Converted with LaTeX2HTML 2024 (Released January 1, 2024) -->
 <HTML lang="en">
 <HEAD>
-<TITLE>Code Documentation</TITLE>
+<TITLE>Example Commands Yaml file</TITLE>
 
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
 <META NAME="viewport" CONTENT="width=device-width, initial-scale=1.0">
@@ -11,8 +11,8 @@
 
 <LINK REL="STYLESHEET" HREF="html.css">
 
-<LINK REL="next" HREF="system_builder_node10.html">
-<LINK REL="previous" HREF="system_builder_node2.html">
+<LINK REL="next" HREF="system_builder_node7.html">
+<LINK REL="previous" HREF="system_builder_node5.html">
 <LINK REL="next" HREF="system_builder_node7.html">
 </HEAD>
 
@@ -23,60 +23,67 @@
  HREF="system_builder_node7.html">
 <IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
 <A
- HREF="html.html">
+ HREF="system_builder_node2.html">
 <IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
 <A
  HREF="system_builder_node5.html">
 <IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A> 
-<A ID="tex2html32"
+<A ID="tex2html38"
   HREF="system_builder_node1.html">
 <IMG WIDTH="65" HEIGHT="24" ALT="contents" SRC="contents.png"></A>  
 <BR>
 <B> Next:</B> <A
- HREF="system_builder_node7.html">init info</A>
+ HREF="system_builder_node7.html">Example Projects Yaml file</A>
 <B> Up:</B> <A
- HREF="html.html">html</A>
+ HREF="system_builder_node2.html">Usage</A>
 <B> Previous:</B> <A
- HREF="system_builder_node5.html">Example</A>
- &nbsp; <B>  <A ID="tex2html33"
+ HREF="system_builder_node5.html">Example Creator</A>
+ &nbsp; <B>  <A ID="tex2html39"
   HREF="system_builder_node1.html">Contents</A></B> 
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H1><A ID="SECTION00030000000000000000"></A> <A ID="Code_Documentation"></A>
-<BR>
-Code Documentation
-</H1>
+<H2><A ID="SECTION00024000000000000000">
+Example Commands Yaml file</A>
+</H2>
+This yaml file is injested so commands are executed with certain steps for the final end product.
+<TABLE FRAME="VOID" CELLPADDING="4"><TR><TD>
+<PRE>
+fusesoc:
+  cmd_0: ["__CHECK_SKIP__{_pwd}/output/hdl/{_project_name}/AFRL_project_veronica_axi_baremetal_1.0.0.bit"]
+  cmd_1: ["fusesoc", "--cores-root", "{path}", "run", "--build", "--work-root", "output/hdl/{_project_name}", "--target", "{target}", "{project}"]
+script:
+  cmd_1: ["{exec}", "{file}", "{_project_name}", "{args}"]
+gcc_riscv32:
+  cmd_0: ["__CHECK_SKIP__{_pwd}/output/bin/riscv/bin/riscv32-unknown-elf-gcc"]
+  cmd_1: ["make", "-C", "{_pwd}/{path}", "clean"]
+  cmd_2: ["__CWD__{_pwd}/{path}", "./configure", "--prefix={_pwd}/output/bin/riscv", "--disable-linux", "--with-arch=rv32imac", "--with-abi-ilp32"]
+  cmd_3: ["make", "-C", "{_pwd}/{path}", "-j", "8"]
+openocd_riscv:
+  cmd_0: ["__CHECK_SKIP__{_pwd}/output/bin/openocd/bin/openocd"]
+  #cmd_1: ["__CWD__{_pwd}/{path}", "git", "apply", "--ignore-whitespace", "../patch/pmpregs.patch"]
+  cmd_2: ["__CWD__{_pwd}/{path}", "./bootstrap"]
+  cmd_3: ["__CWD__{_pwd}/{path}", "./configure", "--prefix={_pwd}/output/bin/openocd", "--enable-ftdi", "--enable-dummy", "--enable-jtag_vpi"]
+  cmd_4: ["make", "-C", "{_pwd}/{path}", "-j", "8"]
+  cmd_5: ["make", "install", "-C", "{_pwd}/{path}"]
+fpga_baremetal_examples:
+  cmd_0: ["__CHECK_SKIP__{_pwd}/output/apps"]
+  cmd_1: ["mkdir", "-p", "{_pwd}/{path}/cmake"]
+  cmd_2: ["__CWD__{_pwd}/{path}/cmake", "__ENV_PATH__{_pwd}/output/bin/riscv/bin/", "cmake", "../", "-DCMAKE_RUNTIME_OUTPUT_DIRECTORY={_pwd}/output/apps", "-DCMAKE_PREFIX_PATH={_pwd}/output/bin/riscv/bin/", "-DBUILD_EXAMPLES_ALL=ON", "-DCMAKE_TOOLCHAIN_FILE={_pwd}/{path}/arch/riscv/riscv.cmake"]
+  cmd_3: ["__ENV_PATH__{_pwd}/output/bin/riscv/bin/", "make", "-C", "{_pwd}/{path}/cmake"]
+buildroot:
+  cmd_1: ["rm", "-rf", "{_pwd}/output/linux/{_project_name}"]
+  cmd_2: ["make", "-C", "{path}", "distclean"]
+  cmd_3: ["make", "O={_pwd}/output/linux/{_project_name}", "-C", "{path}", "{config}"]
+  cmd_4: ["make", "O={_pwd}/output/linux/{_project_name}", "-C", "{path}"]
+genimage:
+  cmd_1: ["mkdir", "-p", "{_pwd}/output/genimage/tmp/{_project_name}"]
+  cmd_2: ["genimage", "--config", "{path}/{_project_name}.cfg"]
+</PRE>
+</TD></TR></TABLE>
 
 <P>
-Natural docs is used to generate documentation for this project. The next lists the following sections.
-
-<P>
-
-<UL>
-<LI><SPAN  CLASS="textbf">init</SPAN> python init code
-<BR></LI>
-<LI><SPAN  CLASS="textbf">builder</SPAN> system builder library.
-<BR></LI>
-<LI><SPAN  CLASS="textbf">creator</SPAN> system builder example code.
-<BR></LI>
-</UL>
-
-<P>
-<BR><HR>
-<!--Table of Child-Links-->
-<A ID="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
-
-<UL CLASS="ChildLinks">
-<LI><A ID="tex2html34"
-  HREF="system_builder_node7.html"><a href="../files/__init__-py.html">init info</a></A>
-<LI><A ID="tex2html35"
-  HREF="system_builder_node8.html"><a href="../files/builder-py.html">builder</a></A>
-<LI><A ID="tex2html36"
-  HREF="system_builder_node9.html"><a href="../files2/creator-py.html">creator</a></A>
-</UL>
-<!--End of Table of Child-Links-->
 <BR><HR>
 
 </BODY>

@@ -9,24 +9,22 @@ author: Jay Convertino
 
 date: 2024.12.16
 
-details: Generic python application that uses YAML to script builds and define commands.
+details: Generic python library that uses YAML to script project builds and define commands for them.
 
 license: MIT
 
 ---
-
 ## TODO
-  - Document
-
-## Quick Info
-  - Document
+  - Cleanup logger code
+  - Better kills(more hit points)
+  - Documentation
 
 ## Version
 ### Current
-  - none
+  - v0.5.0 - first proper library
 
 ### Past
-  - none
+  - v0.0.0
 
 ### DOCUMENTATION
   For detailed usage information, please navigate to one of the following sources. They are the same, just in a different format.
@@ -35,31 +33,30 @@ license: MIT
   - [github page](https://johnathan-convertino-afrl.github.io/system_builder/)
 
 ## Requirements
-### system_build.py
+### python
   - gitpython
   - progressbar2
 
 ### OS
-  - Tested on Ubuntu 22.04
-
-## Quick Start
-  0. Clone this repo
+  - Tested on Ubuntu 22.04, 24.04
 
 ## Usage
-### System Builder
-System builder is a python script that will build all targets in order based on a yaml script. By default this is build.yml if it is not specified. It also checks dependencies, cleans toplevel untracked artifacts, and pulls subrepos.
 
-Each target will be built with its current status show in its own progress bar. This shows the time elapsed, percent complete, status, and name of current target being build.
+### Install
+  0. Clone this repo
+  1. pip install --break-system-packages -e .
+
+### System Builder
+System builder is a python library that will build all target projects in order based on a yaml commands and a yaml projects file. The yaml commands file gives a command and the list of actions to complete that
+command. The yaml projects file contains the steps to build the project using the commands. The library is used by creator python scripts that interact with the end user.
+
+Each target project will be built with its current status show in its own progress bar. This shows the time elapsed, percent complete, status, and name of current target being build.
 
 Example of output to terminal below (formatted to fit this document).
 
 ##### Successful build:
 
 ```
-Checking for dependencies...
-Checking for dependencies complete.
-Checking for submodules...
-Checking for submodules complete.
 Starting build system targets...
 
 [0:13:23] 100% |████████████████| Status: SUCCESS  | Target: zed_fmcomms2-3_linux_busybox_sdcard
@@ -79,29 +76,10 @@ Starting build system targets...
 ERROR: build system failure, see log file log/240513_1715617815.log.
 ```
 
-#### Options
+#### Projects YAML file
+The projects yaml file specifies target projects with parts that contain commands for builds. These parts can be concurrent for multithreading, or sequenctial for one at a time. The order these are executed is from the top down. Meaning the top command will be executed before the one below it.
 
-```
-  --list_targets       List all targets.
-  --list_commands      List all available yaml build commands.
-  --list_deps          List all available dependencies.
-  --clean              remove all generated outputs, including logs.
-  --deps DEPS_FILE     Path to dependencies txt file, used to check if command
-                       line applications exist.
-  --build CONFIG_FILE  Path to build configuration yaml file. build.yml is
-                       default.
-  --target TARGET      Target name from list. None will build all targets by
-                       default.
-  --debug              Turn on debug logging messages
-  --dryrun             Run build without executing commands.
-  --noupdate           Run build without updating submodules.
-  --nodepcheck         Run build without checking dependencies.
-```
-
-#### build.yml
-build.yml (default value system builder looks for) file specifies targets with parts that contain commands for builds. These parts can be concurrent for multithreading, or sequenctial for one at a time. The order these are executed is from the top down. Meaning the top command will be executed before the one below it.
-
-Sample build.yml
+Sample below:
 
 ```
 zed_fmcomms2-3_linux_busybox_sdcard:
@@ -135,23 +113,47 @@ zc702_fmcomms2-3_linux_busybox_sdcard:
       path: img_cfg
 ```
 
-#### deps.txt
-deps.txt (default value system builder looks for) file specifies any executable dependency of the project. These are list line by line in a simple text file. No version checks at the moment. If any are missing the application will print out the missing executable and quit.
+#### Commands YAML file
+The commands yaml file specifies commands for projects.
 
-Sample deps.txt
+Sample below:
 
 ```
-genimage
-fusesoc
-make
-quartus_cpf
-quartus
-mkimage
-vivado
-xsct
-bootgen
-gcc
+fusesoc:
+  cmd_0: ["__CHECK_SKIP__{_pwd}/output/hdl/{_project_name}/AFRL_project_veronica_axi_baremetal_1.0.0.bit"]
+  cmd_1: ["fusesoc", "--cores-root", "{path}", "run", "--build", "--work-root", "output/hdl/{_project_name}", "--target", "{target}", "{project}"]
+script:
+  cmd_1: ["{exec}", "{file}", "{_project_name}", "{args}"]
+gcc_riscv32:
+  cmd_0: ["__CHECK_SKIP__{_pwd}/output/bin/riscv/bin/riscv32-unknown-elf-gcc"]
+  cmd_1: ["make", "-C", "{_pwd}/{path}", "clean"]
+  cmd_2: ["__CWD__{_pwd}/{path}", "./configure", "--prefix={_pwd}/output/bin/riscv", "--disable-linux", "--with-arch=rv32imac", "--with-abi-ilp32"]
+  cmd_3: ["make", "-C", "{_pwd}/{path}", "-j", "8"]
+openocd_riscv:
+  cmd_0: ["__CHECK_SKIP__{_pwd}/output/bin/openocd/bin/openocd"]
+  #cmd_1: ["__CWD__{_pwd}/{path}", "git", "apply", "--ignore-whitespace", "../patch/pmpregs.patch"]
+  cmd_2: ["__CWD__{_pwd}/{path}", "./bootstrap"]
+  cmd_3: ["__CWD__{_pwd}/{path}", "./configure", "--prefix={_pwd}/output/bin/openocd", "--enable-ftdi", "--enable-dummy", "--enable-jtag_vpi"]
+  cmd_4: ["make", "-C", "{_pwd}/{path}", "-j", "8"]
+  cmd_5: ["make", "install", "-C", "{_pwd}/{path}"]
+fpga_baremetal_examples:
+  cmd_0: ["__CHECK_SKIP__{_pwd}/output/apps"]
+  cmd_1: ["mkdir", "-p", "{_pwd}/{path}/cmake"]
+  cmd_2: ["__CWD__{_pwd}/{path}/cmake", "__ENV_PATH__{_pwd}/output/bin/riscv/bin/", "cmake", "../", "-DCMAKE_RUNTIME_OUTPUT_DIRECTORY={_pwd}/output/apps", "-DCMAKE_PREFIX_PATH={_pwd}/output/bin/riscv/bin/", "-DBUILD_EXAMPLES_ALL=ON", "-DCMAKE_TOOLCHAIN_FILE={_pwd}/{path}/arch/riscv/riscv.cmake"]
+  cmd_3: ["__ENV_PATH__{_pwd}/output/bin/riscv/bin/", "make", "-C", "{_pwd}/{path}/cmake"]
+buildroot:
+  cmd_1: ["rm", "-rf", "{_pwd}/output/linux/{_project_name}"]
+  cmd_2: ["make", "-C", "{path}", "distclean"]
+  cmd_3: ["make", "O={_pwd}/output/linux/{_project_name}", "-C", "{path}", "{config}"]
+  cmd_4: ["make", "O={_pwd}/output/linux/{_project_name}", "-C", "{path}"]
+genimage:
+  cmd_1: ["mkdir", "-p", "{_pwd}/output/genimage/tmp/{_project_name}"]
+  cmd_2: ["genimage", "--config", "{path}/{_project_name}.cfg"]
 ```
+
+## Tests
+The tests folder contains an example creator python script. This will execute a few different simple builds using the system builder library. This is an
+incomplete set of tests at the moment.
 
 ## Help
 ### General

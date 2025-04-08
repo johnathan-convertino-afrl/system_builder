@@ -10,7 +10,36 @@
 
 <script type="text/javascript">var q = window.location.search;if (q.startsWith("?Theme=")){var t = q.slice(7);var e = t.indexOf(";");if (e != -1){  t = t.slice(0, e);  }document.documentElement.classList.add(t + "Theme")}</script>
 
-<a name="commandCompiler"></a><a name="Topic14"></a><div class="CTopic TClass LPython first">
+<a name="builder.py"></a><a name="Topic51"></a><div class="CTopic TFile LPython first">
+ <div class="CTitle">builder.py</div>
+</div>
+
+<a name="Authors"></a><a name="Topic52"></a><div class="CTopic TGroup LPython">
+ <div class="CTitle">Authors</div>
+</div>
+
+<a name="JAY_CONVERTINO"></a><a name="Topic53"></a><div class="CTopic TAuthor LPython">
+ <div class="CTitle">JAY CONVERTINO</div>
+</div>
+
+<a name="Dates"></a><a name="Topic54"></a><div class="CTopic TGroup LPython">
+ <div class="CTitle">Dates</div>
+</div>
+
+<a name="2025/03/08"></a><a name="Topic55"></a><div class="CTopic TDate LPython">
+ <div class="CTitle">2025/03/08</div>
+</div>
+
+<a name="Information"></a><a name="Topic56"></a><div class="CTopic TGroup LPython">
+ <div class="CTitle">Information</div>
+</div>
+
+<a name="Brief"></a><a name="Topic57"></a><div class="CTopic TInformation LPython">
+ <div class="CTitle">Brief</div>
+ <div class="CBody"><p>parse yaml file to execute build tools</p><p>@license MIT Copyright 2025 Jay Convertino</p><p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the &quot;Software&quot;), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p><p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p><p>THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p></div>
+</div>
+
+<a name="commandCompiler"></a><a name="Topic14"></a><div class="CTopic TClass LPython">
  <div class="CTitle">commandCompiler</div>
  <div class="NDClassPrototype" id="NDClassPrototype14"><div class="CPEntry TClass Current"><div class="CPName">commandCompiler</div></div></div>
  <div class="CBody"><p>Parse yaml files into commands for command executor</p></div>
@@ -20,15 +49,15 @@
  <div class="CTitle">Functions</div>
 </div>
 
-<a name="commandCompiler.__init__"></a><a name="Topic19"></a><div class="CTopic TFunction LPython">
+<a name="commandCompiler.__init__"></a><a name="Topic44"></a><div class="CTopic TFunction LPython">
  <div class="CTitle">__init__</div>
- <div id="NDPrototype19" class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4"><div class="PBeforeParameters" data-WideGridArea="1/1/5/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/5/2"><span class="SHKeyword">def</span> __init__(</div><div class="PName InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">self,</div><div class="PName InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3">yaml_cmds</div><div class="PDefaultValueSeparator" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4">&nbsp=&nbsp;</div><div class="PDefaultValue InLastParameterColumn" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5"><span class="SHKeyword">None</span>,</div><div class="PName InFirstParameterColumn" data-WideGridArea="3/2/4/3" data-NarrowGridArea="4/1/5/2" style="grid-area:3/2/4/3">yaml_projects</div><div class="PDefaultValueSeparator" data-WideGridArea="3/3/4/4" data-NarrowGridArea="4/2/5/3" style="grid-area:3/3/4/4">&nbsp=&nbsp;</div><div class="PDefaultValue InLastParameterColumn" data-WideGridArea="3/4/4/5" data-NarrowGridArea="4/3/5/4" style="grid-area:3/4/4/5"><span class="SHKeyword">None</span>,</div><div class="PName InFirstParameterColumn" data-WideGridArea="4/2/5/3" data-NarrowGridArea="5/1/6/2" style="grid-area:4/2/5/3">target</div><div class="PDefaultValueSeparator" data-WideGridArea="4/3/5/4" data-NarrowGridArea="5/2/6/3" style="grid-area:4/3/5/4">&nbsp=&nbsp;</div><div class="PDefaultValue InLastParameterColumn" data-WideGridArea="4/4/5/5" data-NarrowGridArea="5/3/6/4" style="grid-area:4/4/5/5"><span class="SHKeyword">None</span></div><div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="4/5/5/6" data-NarrowGridArea="6/1/7/5" style="grid-area:4/5/5/6">)</div></div></div></div>
+ <div id="NDPrototype44" class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4"><div class="PBeforeParameters" data-WideGridArea="1/1/5/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/5/2"><span class="SHKeyword">def</span> __init__(</div><div class="PName InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">self,</div><div class="PName InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3">yaml_projects</div><div class="PDefaultValueSeparator" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4">&nbsp=&nbsp;</div><div class="PDefaultValue InLastParameterColumn" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5"><span class="SHKeyword">None</span>,</div><div class="PName InFirstParameterColumn" data-WideGridArea="3/2/4/3" data-NarrowGridArea="4/1/5/2" style="grid-area:3/2/4/3">yaml_commands</div><div class="PDefaultValueSeparator" data-WideGridArea="3/3/4/4" data-NarrowGridArea="4/2/5/3" style="grid-area:3/3/4/4">&nbsp=&nbsp;</div><div class="PDefaultValue InLastParameterColumn" data-WideGridArea="3/4/4/5" data-NarrowGridArea="4/3/5/4" style="grid-area:3/4/4/5"><span class="SHKeyword">None</span>,</div><div class="PName InFirstParameterColumn" data-WideGridArea="4/2/5/3" data-NarrowGridArea="5/1/6/2" style="grid-area:4/2/5/3">target</div><div class="PDefaultValueSeparator" data-WideGridArea="4/3/5/4" data-NarrowGridArea="5/2/6/3" style="grid-area:4/3/5/4">&nbsp=&nbsp;</div><div class="PDefaultValue InLastParameterColumn" data-WideGridArea="4/4/5/5" data-NarrowGridArea="5/3/6/4" style="grid-area:4/4/5/5"><span class="SHKeyword">None</span></div><div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="4/5/5/6" data-NarrowGridArea="6/1/7/5" style="grid-area:4/5/5/6">)</div></div></div></div>
  <div class="CBody"><p>Setup class</p></div>
 </div>
 
-<a name="commandCompiler.listCmds"></a><a name="Topic20"></a><div class="CTopic TFunction LPython">
- <div class="CTitle">listCmds</div>
- <div id="NDPrototype20" class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2"><div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/2/2"><span class="SHKeyword">def</span> listCmds(</div><div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">self</div><div class="PAfterParameters" data-WideGridArea="1/3/2/4" data-NarrowGridArea="3/1/4/3" style="grid-area:1/3/2/4">)</div></div></div></div>
+<a name="commandCompiler.listCommands"></a><a name="Topic45"></a><div class="CTopic TFunction LPython">
+ <div class="CTitle">listCommands</div>
+ <div id="NDPrototype45" class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2"><div class="PBeforeParameters" data-WideGridArea="1/1/2/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/2/2"><span class="SHKeyword">def</span> listCommands(</div><div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">self</div><div class="PAfterParameters" data-WideGridArea="1/3/2/4" data-NarrowGridArea="3/1/4/3" style="grid-area:1/3/2/4">)</div></div></div></div>
  <div class="CBody"><p>Print a list of all the commands available</p></div>
 </div>
 
@@ -50,15 +79,15 @@
  <div class="CBody"><p>Set a yaml file for project commands</p></div>
 </div>
 
-<a name="commandCompiler.setCmds"></a><a name="Topic24"></a><div class="CTopic TFunction LPython">
- <div class="CTitle">setCmds</div>
- <div id="NDPrototype24" class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2"><div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/3/2"><span class="SHKeyword">def</span> setCmds(</div><div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">self,</div><div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3">yaml_cmds</div><div class="PAfterParameters" data-WideGridArea="2/3/3/4" data-NarrowGridArea="4/1/5/3" style="grid-area:2/3/3/4">)</div></div></div></div>
+<a name="commandCompiler.setCommands"></a><a name="Topic46"></a><div class="CTopic TFunction LPython">
+ <div class="CTitle">setCommands</div>
+ <div id="NDPrototype46" class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><div class="PParameterCells" data-WideColumnCount="3" data-NarrowColumnCount="2"><div class="PBeforeParameters" data-WideGridArea="1/1/3/2" data-NarrowGridArea="1/1/2/3" style="grid-area:1/1/3/2"><span class="SHKeyword">def</span> setCommands(</div><div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">self,</div><div class="PName InFirstParameterColumn InLastParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3">yaml_commands</div><div class="PAfterParameters" data-WideGridArea="2/3/3/4" data-NarrowGridArea="4/1/5/3" style="grid-area:2/3/3/4">)</div></div></div></div>
  <div class="CBody"><p>Set a yaml file for commands available</p></div>
 </div>
 
-<a name="commandCompiler.create"></a><a name="Topic25"></a><div class="CTopic TFunction LPython">
+<a name="commandCompiler.create"></a><a name="Topic47"></a><div class="CTopic TFunction LPython">
  <div class="CTitle">create</div>
- <div id="NDPrototype25" class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4"><div class="PBeforeParameters" data-WideGridArea="1/1/5/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/5/2"><span class="SHKeyword">def</span> create(</div><div class="PName InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">self,</div><div class="PName InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3">yaml_cmds</div><div class="PDefaultValueSeparator" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4">&nbsp=&nbsp;</div><div class="PDefaultValue InLastParameterColumn" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5"><span class="SHKeyword">None</span>,</div><div class="PName InFirstParameterColumn" data-WideGridArea="3/2/4/3" data-NarrowGridArea="4/1/5/2" style="grid-area:3/2/4/3">yaml_projects</div><div class="PDefaultValueSeparator" data-WideGridArea="3/3/4/4" data-NarrowGridArea="4/2/5/3" style="grid-area:3/3/4/4">&nbsp=&nbsp;</div><div class="PDefaultValue InLastParameterColumn" data-WideGridArea="3/4/4/5" data-NarrowGridArea="4/3/5/4" style="grid-area:3/4/4/5"><span class="SHKeyword">None</span>,</div><div class="PName InFirstParameterColumn" data-WideGridArea="4/2/5/3" data-NarrowGridArea="5/1/6/2" style="grid-area:4/2/5/3">target</div><div class="PDefaultValueSeparator" data-WideGridArea="4/3/5/4" data-NarrowGridArea="5/2/6/3" style="grid-area:4/3/5/4">&nbsp=&nbsp;</div><div class="PDefaultValue InLastParameterColumn" data-WideGridArea="4/4/5/5" data-NarrowGridArea="5/3/6/4" style="grid-area:4/4/5/5"><span class="SHKeyword">None</span></div><div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="4/5/5/6" data-NarrowGridArea="6/1/7/5" style="grid-area:4/5/5/6">)</div></div></div></div>
+ <div id="NDPrototype47" class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><div class="PParameterCells" data-WideColumnCount="5" data-NarrowColumnCount="4"><div class="PBeforeParameters" data-WideGridArea="1/1/5/2" data-NarrowGridArea="1/1/2/5" style="grid-area:1/1/5/2"><span class="SHKeyword">def</span> create(</div><div class="PName InFirstParameterColumn" data-WideGridArea="1/2/2/3" data-NarrowGridArea="2/1/3/2" style="grid-area:1/2/2/3">self,</div><div class="PName InFirstParameterColumn" data-WideGridArea="2/2/3/3" data-NarrowGridArea="3/1/4/2" style="grid-area:2/2/3/3">yaml_projects</div><div class="PDefaultValueSeparator" data-WideGridArea="2/3/3/4" data-NarrowGridArea="3/2/4/3" style="grid-area:2/3/3/4">&nbsp=&nbsp;</div><div class="PDefaultValue InLastParameterColumn" data-WideGridArea="2/4/3/5" data-NarrowGridArea="3/3/4/4" style="grid-area:2/4/3/5"><span class="SHKeyword">None</span>,</div><div class="PName InFirstParameterColumn" data-WideGridArea="3/2/4/3" data-NarrowGridArea="4/1/5/2" style="grid-area:3/2/4/3">yaml_commands</div><div class="PDefaultValueSeparator" data-WideGridArea="3/3/4/4" data-NarrowGridArea="4/2/5/3" style="grid-area:3/3/4/4">&nbsp=&nbsp;</div><div class="PDefaultValue InLastParameterColumn" data-WideGridArea="3/4/4/5" data-NarrowGridArea="4/3/5/4" style="grid-area:3/4/4/5"><span class="SHKeyword">None</span>,</div><div class="PName InFirstParameterColumn" data-WideGridArea="4/2/5/3" data-NarrowGridArea="5/1/6/2" style="grid-area:4/2/5/3">target</div><div class="PDefaultValueSeparator" data-WideGridArea="4/3/5/4" data-NarrowGridArea="5/2/6/3" style="grid-area:4/3/5/4">&nbsp=&nbsp;</div><div class="PDefaultValue InLastParameterColumn" data-WideGridArea="4/4/5/5" data-NarrowGridArea="5/3/6/4" style="grid-area:4/4/5/5"><span class="SHKeyword">None</span></div><div class="PAfterParameters NegativeLeftSpaceOnWide" data-WideGridArea="4/5/5/6" data-NarrowGridArea="6/1/7/5" style="grid-area:4/5/5/6">)</div></div></div></div>
  <div class="CBody"><p>Pass a yaml file to use for processing into format for commandExecutor.</p></div>
 </div>
 

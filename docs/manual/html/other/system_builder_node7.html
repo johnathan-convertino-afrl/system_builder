@@ -3,7 +3,7 @@
 <!--Converted with LaTeX2HTML 2024 (Released January 1, 2024) -->
 <HTML lang="en">
 <HEAD>
-<TITLE>init info</TITLE>
+<TITLE>Example Projects Yaml file</TITLE>
 
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
 <META NAME="viewport" CONTENT="width=device-width, initial-scale=1.0">
@@ -11,7 +11,6 @@
 
 <LINK REL="STYLESHEET" HREF="html.css">
 
-<LINK REL="next" HREF="system_builder_node8.html">
 <LINK REL="previous" HREF="system_builder_node6.html">
 <LINK REL="next" HREF="system_builder_node8.html">
 </HEAD>
@@ -23,32 +22,67 @@
  HREF="system_builder_node8.html">
 <IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
 <A
- HREF="system_builder_node6.html">
+ HREF="system_builder_node2.html">
 <IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
 <A
  HREF="system_builder_node6.html">
 <IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A> 
-<A ID="tex2html37"
+<A ID="tex2html40"
   HREF="system_builder_node1.html">
 <IMG WIDTH="65" HEIGHT="24" ALT="contents" SRC="contents.png"></A>  
 <BR>
 <B> Next:</B> <A
- HREF="system_builder_node8.html">builder</A>
+ HREF="system_builder_node8.html">Code Documentation</A>
 <B> Up:</B> <A
- HREF="system_builder_node6.html">Code Documentation</A>
+ HREF="system_builder_node2.html">Usage</A>
 <B> Previous:</B> <A
- HREF="system_builder_node6.html">Code Documentation</A>
- &nbsp; <B>  <A ID="tex2html38"
+ HREF="system_builder_node6.html">Example Commands Yaml file</A>
+ &nbsp; <B>  <A ID="tex2html41"
   HREF="system_builder_node1.html">Contents</A></B> 
 <BR>
 <BR></DIV>
 <!--End of Navigation Panel-->
 
-<H2><A ID="SECTION00031000000000000000"></A>
-<BR>
-<a href="../files/__init__-py.html">init info</a>
+<H2><A ID="SECTION00025000000000000000">
+Example Projects Yaml file</A>
 </H2>
-  <BR><HR>
+This takes the commands and fills out the information required and order of operations for creating the finaly end result project.
+<TABLE FRAME="VOID" CELLPADDING="4"><TR><TD>
+<PRE>
+zed_fmcomms2-3_linux_busybox_sdcard:
+  concurrent:
+    fusesoc: &amp;fusesoc_fmcomms2-3
+      path: hdl
+      project: AFRL:project:fmcomms2-3:1.0.0
+      target: zed_bootgen
+    buildroot: &amp;buildroot_fmcomms2-3
+      path: sw/linux/buildroot-afrl
+      config: zynq_zed_ad_fmcomms2-3_defconfig
+  sequential:
+    script: &amp;output_files_fmcomms2-3
+      exec: python
+      file: py/output_gen.py
+      args: "--rootfs output/linux --bootfs output/hdl --dest output/sdcard"
+    genimage:
+      path: img_cfg
+zc702_fmcomms2-3_linux_busybox_sdcard:
+  concurrent:
+    fusesoc:
+      &lt;&lt;: *fusesoc_fmcomms2-3
+      target: zc702_bootgen
+    buildroot:
+      &lt;&lt;: *buildroot_fmcomms2-3
+      config: zynq_zc702_ad_fmcomms2-3_defconfig
+  sequential:
+    script:
+      &lt;&lt;: *output_files_fmcomms2-3
+    genimage:
+      path: img_cfg
+</PRE>
+</TD></TR></TABLE>
+
+<P>
+<BR><HR>
 
 </BODY>
 </HTML>

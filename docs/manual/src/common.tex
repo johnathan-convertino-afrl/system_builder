@@ -1,7 +1,7 @@
 \begin{titlepage}
   \begin{center}
 
-  {\Huge system builder}
+  {\Huge system builder library}
 
   \vspace{25mm}
 
@@ -38,18 +38,94 @@ The following are the dependencies of the cores.
 
 \begin{itemize}
   \item python 3.X
-  \item python progressbar
-  \item python git (creator)
+  \item python progressbar2
 \end{itemize}
 
-\subsection{Example}
+\subsection{Example Creator}
 \par
-The file creator.py is an example piece of code for building a project.
+The creator is responsable for instantiating the library, preparing the project, and launching the system builder library to build the project.
 \begin{lstlisting}[language=Python]
-import system.build
+from system.build import *
 
-print(f'FUTURE CODE HERE')
+cmd_compiler = commandCompiler("projects.yml", "commands.yml")
 
+cmd_compiler.create()
+
+projects = cmd_compiler.getResult()
+
+cmd_exec = commandExecutor(projects, args.dryrun)
+
+cmd_exec.runProject()
+
+\end{lstlisting}
+
+\subsection{Example Commands Yaml file}
+This yaml file is injested so commands are executed with certain steps for the final end product.
+\begin{lstlisting}[language=XML]
+fusesoc:
+  cmd_0: ["__CHECK_SKIP__{_pwd}/output/hdl/{_project_name}/AFRL_project_veronica_axi_baremetal_1.0.0.bit"]
+  cmd_1: ["fusesoc", "--cores-root", "{path}", "run", "--build", "--work-root", "output/hdl/{_project_name}", "--target", "{target}", "{project}"]
+script:
+  cmd_1: ["{exec}", "{file}", "{_project_name}", "{args}"]
+gcc_riscv32:
+  cmd_0: ["__CHECK_SKIP__{_pwd}/output/bin/riscv/bin/riscv32-unknown-elf-gcc"]
+  cmd_1: ["make", "-C", "{_pwd}/{path}", "clean"]
+  cmd_2: ["__CWD__{_pwd}/{path}", "./configure", "--prefix={_pwd}/output/bin/riscv", "--disable-linux", "--with-arch=rv32imac", "--with-abi-ilp32"]
+  cmd_3: ["make", "-C", "{_pwd}/{path}", "-j", "8"]
+openocd_riscv:
+  cmd_0: ["__CHECK_SKIP__{_pwd}/output/bin/openocd/bin/openocd"]
+  #cmd_1: ["__CWD__{_pwd}/{path}", "git", "apply", "--ignore-whitespace", "../patch/pmpregs.patch"]
+  cmd_2: ["__CWD__{_pwd}/{path}", "./bootstrap"]
+  cmd_3: ["__CWD__{_pwd}/{path}", "./configure", "--prefix={_pwd}/output/bin/openocd", "--enable-ftdi", "--enable-dummy", "--enable-jtag_vpi"]
+  cmd_4: ["make", "-C", "{_pwd}/{path}", "-j", "8"]
+  cmd_5: ["make", "install", "-C", "{_pwd}/{path}"]
+fpga_baremetal_examples:
+  cmd_0: ["__CHECK_SKIP__{_pwd}/output/apps"]
+  cmd_1: ["mkdir", "-p", "{_pwd}/{path}/cmake"]
+  cmd_2: ["__CWD__{_pwd}/{path}/cmake", "__ENV_PATH__{_pwd}/output/bin/riscv/bin/", "cmake", "../", "-DCMAKE_RUNTIME_OUTPUT_DIRECTORY={_pwd}/output/apps", "-DCMAKE_PREFIX_PATH={_pwd}/output/bin/riscv/bin/", "-DBUILD_EXAMPLES_ALL=ON", "-DCMAKE_TOOLCHAIN_FILE={_pwd}/{path}/arch/riscv/riscv.cmake"]
+  cmd_3: ["__ENV_PATH__{_pwd}/output/bin/riscv/bin/", "make", "-C", "{_pwd}/{path}/cmake"]
+buildroot:
+  cmd_1: ["rm", "-rf", "{_pwd}/output/linux/{_project_name}"]
+  cmd_2: ["make", "-C", "{path}", "distclean"]
+  cmd_3: ["make", "O={_pwd}/output/linux/{_project_name}", "-C", "{path}", "{config}"]
+  cmd_4: ["make", "O={_pwd}/output/linux/{_project_name}", "-C", "{path}"]
+genimage:
+  cmd_1: ["mkdir", "-p", "{_pwd}/output/genimage/tmp/{_project_name}"]
+  cmd_2: ["genimage", "--config", "{path}/{_project_name}.cfg"]
+\end{lstlisting}
+
+\subsection{Example Projects Yaml file}
+This takes the commands and fills out the information required and order of operations for creating the finaly end result project.
+\begin{lstlisting}[language=XML]
+zed_fmcomms2-3_linux_busybox_sdcard:
+  concurrent:
+    fusesoc: &fusesoc_fmcomms2-3
+      path: hdl
+      project: AFRL:project:fmcomms2-3:1.0.0
+      target: zed_bootgen
+    buildroot: &buildroot_fmcomms2-3
+      path: sw/linux/buildroot-afrl
+      config: zynq_zed_ad_fmcomms2-3_defconfig
+  sequential:
+    script: &output_files_fmcomms2-3
+      exec: python
+      file: py/output_gen.py
+      args: "--rootfs output/linux --bootfs output/hdl --dest output/sdcard"
+    genimage:
+      path: img_cfg
+zc702_fmcomms2-3_linux_busybox_sdcard:
+  concurrent:
+    fusesoc:
+      <<: *fusesoc_fmcomms2-3
+      target: zc702_bootgen
+    buildroot:
+      <<: *buildroot_fmcomms2-3
+      config: zynq_zc702_ad_fmcomms2-3_defconfig
+  sequential:
+    script:
+      <<: *output_files_fmcomms2-3
+    genimage:
+      path: img_cfg
 \end{lstlisting}
 
 \section{Code Documentation} \label{Code Documentation}
