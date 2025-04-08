@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("_lo",["Function"],[["_load_yaml",,[["commandCompiler",,,,0,"File:builder.py:commandCompiler._load_yaml","PythonClass:commandCompiler:_load_yaml"]]]]);

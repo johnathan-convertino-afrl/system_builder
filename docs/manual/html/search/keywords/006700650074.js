@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("get",["Function"],[["getResult",,[["commandCompiler",,,,0,"File:builder.py:commandCompiler.getResult","PythonClass:commandCompiler:getResult"]]]]);

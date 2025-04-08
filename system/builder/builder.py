@@ -56,19 +56,21 @@ logger = logging.getLogger(__name__)
 class commandCompiler:
   # Method: __init__
   # Setup class
-  def __init__(self, yaml_cmds = None, yaml_projects = None, target = None):
-    self._yaml_cmds = yaml_cmds
+  def __init__(self, yaml_projects = None, yaml_commands = None, target = None):
+    self._yaml_commands = yaml_commands
     self._yaml_projects = yaml_projects
     self._target = target
     self._command_template = None
     self._project_template = None
     self._projects = None
 
-  # Method: listCmds
+    logger.info(f"{self.__class__.__name__:<24} : VERSION {__version__}")
+
+  # Method: listCommands
   # Print a list of all the commands available
-  def listCmds(self):
+  def listCommands(self):
     try:
-      self._command_template = self._load_yaml(self._yaml_cmds)
+      self._command_template = self._load_yaml(self._yaml_commands)
     except Exception as e: raise
 
     print('\n' + f"AVAILABLE YAML COMMANDS FOR BUILD" + '\n')
@@ -104,7 +106,7 @@ class commandCompiler:
   # Method: clear
   # Clear results of create and current yaml file pointer.
   def clear(self):
-    self._yaml_cmds = None
+    self._yaml_commands = None
     self._yaml_projects = None
     self._command_template = None
     self._projects = None
@@ -114,22 +116,24 @@ class commandCompiler:
   def setProjects(self, yaml_projects):
     self._yaml_projects = yaml_projects
 
-  # Method: setCmds
+  # Method: setCommands
   # Set a yaml file for commands available
-  def setCmds(self, yaml_cmds):
-    self._yaml_cmds = yaml_cmds
+  def setCommands(self, yaml_commands):
+    self._yaml_commands = yaml_commands
 
   # Method: create
   # Pass a yaml file to use for processing into format for commandExecutor.
-  def create(self, yaml_cmds = None, yaml_projects = None, target = None):
-    if(yaml_cmds is None and self._yaml_cmds is None):
-      raise TypeError(f"{self.__class__.__name__:<24} : YAML COMMANDS FILE HAS NOT BEEN SET")
+  def create(self, yaml_projects = None, yaml_commands = None, target = None):
+    if(yaml_commands is None and self._yaml_commands is None):
+      logger.error(f"{self.__class__.__name__:<24} : YAML COMMANDS FILE HAS NOT BEEN SET")
+      raise TypeError("YAML COMMANDS FILE HAS NOT BEEN SET")
 
     if(yaml_projects is None and self._yaml_projects is None):
-      raise TypeError(f"{self.__class__.__name__:<24} : YAML BUILD FILE HAS NOT BEEN SET")
+      logger.error(f"{self.__class__.__name__:<24} : YAML BUILD FILE HAS NOT BEEN SET")
+      raise TypeError("YAML BUILD FILE HAS NOT BEEN SET")
 
-    if(yaml_cmds is not None):
-      self._yaml_cmds = yaml_cmds
+    if(yaml_commands is not None):
+      self._yaml_commands = yaml_commands
 
     if(yaml_projects is not None):
       self._yaml_projects = yaml_projects
@@ -138,7 +142,7 @@ class commandCompiler:
       self._target = target
 
     try:
-      self._command_template = self._load_yaml(self._yaml_cmds)
+      self._command_template = self._load_yaml(self._yaml_commands)
     except Exception as e: raise
 
     try:
@@ -159,7 +163,8 @@ class commandCompiler:
   # "--build", "--target", "zed_blinky", "::blinky:1.0.0"]]], 'sequential': [[]]}}
   def getResult(self):
     if(self._projects is None):
-      raise ValueError(f"{self.__class__.__name__:<24} : PROJECTS IS NONE, RUN CREATE BEFORE TRYING TO GET RESULTS.")
+      logger.error(f"{self.__class__.__name__:<24} : PROJECTS IS NONE, RUN CREATE BEFORE TRYING TO GET RESULTS.")
+      raise ValueError("PROJECTS IS NONE")
 
     return self._projects
 
@@ -169,8 +174,9 @@ class commandCompiler:
     if self._target != None:
       try:
         self._yaml_projects = {self._target: self._yaml_projects[self._target]}
-      except KeyError:
-        raise Exception(f"{self.__class__.__name__:<24} : TARGET : {target}, DOES NOT EXIST.")
+      except KeyError as e:
+        logger.exception(f"{self.__class__.__name__:<24} : TARGET : {target}, DOES NOT EXIST.", exc_info=e)
+        raise RuntimeError("TARGET IS INVALID")
 
   # Method: _process
   # Create dict of dicts that contains lists with lists of lists to execute with subprocess
@@ -179,9 +185,8 @@ class commandCompiler:
   def _process(self):
 
     if self._command_template is None:
-      raise Exception("Command template is None")
-
-    _checkTarget()
+      logger.error(f"{self.__class__.__name__:<24} : Command template is None")
+      raise ValueError("COMMAND TEMPLATE IS NONE")
 
     self._projects = {}
 
@@ -194,8 +199,9 @@ class commandCompiler:
         for part, command in part.items():
           try:
             command_template = self._command_template[part].values()
-          except KeyError:
-            raise Exception(f"{self.__class__.__name__:<24} : NO BUILD RULE FOR PART: {part}.")
+          except KeyError as e:
+            logger.exception(f"{self.__class__.__name__:<24} : NO BUILD RULE FOR PART: {part}.", exc_info=e)
+            raise
 
           command.update({'_pwd' : os.getcwd()})
 
@@ -216,7 +222,7 @@ class commandCompiler:
 
           project_parts.append(part_commands)
 
-        project_run_type[run_type] = proself._gen_build_cmds()ject_parts
+        project_run_type[run_type] = project_parts
 
       self._projects[project] = project_run_type
 
@@ -247,15 +253,23 @@ class commandCompiler:
 # Execute commands create from commandCompileris not a valid selection
 class commandExecutor:
   def __init__(self, projects = None, dryrun = False):
-    self.clear()
     self._projects = projects
     self._dryrun = dryrun
+    self._failed = False
+    self._threads = []
+    self._processes = []
+    self._thread_lock = None
+    self._items = 0
+    self._items_done = 0
+    self._project_name = "None"
+
+    logger.info(f"{self.__class__.__name__:<24} : VERSION {__version__}")
 
   # Method: clear
   # Clear state of commandExecutor to init with no values passed
   def clear(self):
     if(self.completed or self.failed):
-      self._projects = Noneself._gen_build_cmds()
+      self._projects = None
       self._failed = False
       self._threads.clear()
       self._processes.clear()
@@ -265,7 +279,8 @@ class commandExecutor:
       self._items_done = 0
       self._project_name = "None"
     else:
-      raise RuntimeError(f"{self.__class__.__name__:<24} : CAN NOT CLEAR WHILE ITEMS ARE NOT COMPLETE OR EXECUTOR HAS NOT FAILED")
+      logger.error(f"{self.__class__.__name__:<24} : CAN NOT CLEAR WHILE ITEMS ARE NOT COMPLETE OR EXECUTOR HAS NOT FAILED")
+      raise RuntimeError("CAN NOT CLEAR WHILE ITEMS ARE NOT COMPLETE OR EXECUTOR HAS NOT FAILED")
 
   # Method: completed
   # return a bool if all items have been completed.
@@ -302,7 +317,8 @@ class commandExecutor:
   # Call the internal execute method to start calling up each of the projects to build.
   def runProject(self, projects = None):
     if(self._projects is None and projects is None):
-      raise ValueError(f"{self.__class__.__name__:<24} : NO PROJECT(S) ARE AVAILABLE TO RUN")
+      logger.error(f"{self.__class__.__name__:<24} : NO PROJECT(S) ARE AVAILABLE TO RUN")
+      raise ValueError("NO PROJECT(S) ARE AVAILABLE TO RUN")
 
     try:
       self._execute()
@@ -313,7 +329,8 @@ class commandExecutor:
   # iterate over projects avaiable and execute commands per project
   def _execute(self):
     if self._projects == None:
-      raise Exception(f"{self.__class__.__name__:<24} : NO PROJECTS AVAILABLE FOR BUILDER")
+      logger.error(f"{self.__class__.__name__:<24} : NO PROJECTS AVAILABLE FOR BUILDER")
+      raise RuntimeError("NO PROJECTS SPECIFIED")
 
     threading.excepthook = self._thread_exception
 
@@ -350,7 +367,8 @@ class commandExecutor:
             t.join()
 
           if self._failed:
-            raise Exception(f"{self.__class__.__name__:<24} : ONE OR MORE THREADS FAILED.")
+            logger.error(f"{self.__class__.__name__:<24} : ONE OR MORE THREADS FAILED.")
+            raise RuntimeError("THREAD HAS FAILED")
 
         elif run_type == 'sequential':
           for command_list in commands:
@@ -364,7 +382,8 @@ class commandExecutor:
               raise
 
         else:
-          raise Exception(f"{self.__class__.__name__:<24} : RUN_TYPE {run_type} IS NOT A VALID SELECTION")
+          logger.error(f"{self.__class__.__name__:<24} : RUN_TYPE {run_type} IS NOT A VALID SELECTION")
+          raise TypeError("INVALID RUNTYPE")
 
       bar_thread.join()
 
@@ -413,7 +432,8 @@ class commandExecutor:
         continue
 
       if self._failed:
-        raise Exception(f"{self.__class__.__name__:<24} : PREVIOUS BUILD PROCESS FAILED, ABORTING : {' '.join(command)}")
+        logger.error(f"{self.__class__.__name__:<24} : PREVIOUS BUILD PROCESS FAILED, ABORTING : {' '.join(command)}")
+        raise RuntimeError("PREVIOUS BUILD FAILED")
 
       logger.info(f"{self.__class__.__name__:<24} : Executing command: {' '.join(command)}")
 
@@ -427,8 +447,9 @@ class commandExecutor:
             if cmd_error:
               for line in cmd_error.split('\n'):
                 if len(line):
-                  logger.error(line)
-            raise Exception(f"{self.__class__.__name__:<24} : ISSUE EXECUTING COMMAND : {' '.join(command)}")
+                  logger.exception(line)
+            logger.error(f"{self.__class__.__name__:<24} : ISSUE EXECUTING COMMAND : {' '.join(command)}")
+            raise RuntimeError("ISSUE EXECUTING COMMAND")
         except Exception as e: raise
 
         if cmd_output:
@@ -467,17 +488,25 @@ class commandExecutor:
 
     logger.error(f"{self.__class__.__name__:<24} : BUILD FAILED, TERMINATED SUBPROCESS AND PROGRAM. {str(args.exc_value)}")
 
+  # # Method: _bar_length
+  # # Length of the bar
+  # def _bar_length(self, value):
+  #   logger.info(len(value))
+  #   logger.info(os.get_terminal_size().columns)
+  #   return os.get_terminal_size().columns
+
   # Method: _bar_thread
   # Creates progress bar display in terminal for end user display.
   def _bar_thread(self):
     status = "BUILDING"
     bar = progressbar.ProgressBar(widgets=[progressbar.Timer(format=' [%(elapsed)s] '), progressbar.Percentage(), " ", progressbar.GranularBar(markers='.#', left='[', right='] '), progressbar.Variable('Status'), " | ", progressbar.Variable('Target')], max_value=self._items).start()
 
-    ba_project_namer.update(Status=f"{status:^8}")
+    bar.update(Status=f"{status:^8}")
 
     while((self._items_done < self._items) and (self._failed == False)):
       time.sleep(0.1)
-      bar.update(Target=f"{self._project_name[:os.get_terminal_size().columns-64]}")
+      size = 64#os.get_terminal_size().columns-64
+      bar.update(Target=f"{self._project_name:<{size}}")
       bar.update(self._items_done)
 
     if self._failed:
@@ -485,7 +514,7 @@ class commandExecutor:
     else:
       status = "SUCCESS"
 
-    bar.update(Stat_bar_threadus=f"{status:^8}")
+    bar.update(Status=f"{status:^8}")
     bar.finish(dirty=self._failed)
 
 class commandDependencies:

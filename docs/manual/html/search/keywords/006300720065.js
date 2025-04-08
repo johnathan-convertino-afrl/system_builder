@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("cre",["Function"],[["create",,[["commandCompiler",,,,0,"File:builder.py:commandCompiler.create","PythonClass:commandCompiler:create"]]]]);

@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("_ch",["Function"],[["_checkTarget",,[["commandCompiler",,,,0,"File:builder.py:commandCompiler._checkTarget","PythonClass:commandCompiler:_checkTarget"]]]]);

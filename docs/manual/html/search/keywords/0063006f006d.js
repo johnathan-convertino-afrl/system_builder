@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("com",["Class","Function"],[["commandCompiler",,[[,,,,0,"File:builder.py:commandCompiler","PythonClass:commandCompiler"]]],["commandExecutor",,[[,,,,0,"File:builder.py:commandExecutor","PythonClass:commandExecutor"]]],["completed",,[["commandExecutor",,,,1,"File:builder.py:commandExecutor.completed","PythonClass:commandExecutor:completed"]]]]);

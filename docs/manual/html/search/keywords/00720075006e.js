@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("run",["Function"],[["run",,[["bob",,,,0,"File:builder.py:bob.run","PythonClass:bob:run"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("run",["Function"],[["runProject",,[["commandExecutor",,,,0,"File:builder.py:commandExecutor.runProject","PythonClass:commandExecutor:runProject"]]]]);

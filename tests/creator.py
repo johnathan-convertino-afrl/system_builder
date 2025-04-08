@@ -51,10 +51,11 @@ except ImportError:
   exit(0)
 
 try:
-  from system.builder import *
-except ImportError:
-  print("REQUIREMENT MISSING: system.builder, pip install system.builder")
-  exit(0)
+    from system.builder import *
+except ImportError as e:
+    import sys
+    sys.path.append("../")
+    from system.builder import *
 
 sys.path.append("../")
 
@@ -73,10 +74,10 @@ def main():
 
   logger_setup(args.debug)
 
-  cmd_compiler = commandCompiler(args.build, args.cmds, args.target)
+  cmd_compiler = commandCompiler(args.proj_file, args.cmds_file, args.target)
 
   if args.list_cmds:
-    exit(cmd_compiler.listCmds())
+    exit(cmd_compiler.listCommands())
 
   if args.list_all:
     exit(cmd_compiler.listProjects())
@@ -97,7 +98,6 @@ def main():
   try:
     cmd_compiler.create()
   except Exception as e:
-    logger.error(str(e))
     time.sleep(1)
     print("\n" + f"ERROR: build system failure, for details, see log file log/{os.path.basename(logger.handlers[0].baseFilename)}")
     exit(~0)
@@ -116,7 +116,6 @@ def main():
     print("\n" + f"Build interrupted with CTRL+C.")
     exit(~0)
   except Exception as e:
-    logger.error(str(e))
     time.sleep(1)
     print("\n" + f"ERROR: build system failure, for details, see log file log/{os.path.basename(logger.handlers[0].baseFilename)}")
     exit(~0)

@@ -1,1 +1,1 @@
-﻿NDMenu.OnSectionLoaded("classes.js",[[1,"bob"]]);
+﻿NDMenu.OnSectionLoaded("classes.js",[[1,"commandCompiler"],[1,"commandExecutor"]]);

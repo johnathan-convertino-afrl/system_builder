@@ -34,3 +34,11 @@ fpga_baremetal_examples:
   cmd_1: ["mkdir", "-p", "{_pwd}/{path}/cmake"]
   cmd_2: ["__CWD__{_pwd}/{path}/cmake", "__ENV_PATH__{_pwd}/output/bin/riscv/bin/", "cmake", "../", "-DCMAKE_RUNTIME_OUTPUT_DIRECTORY={_pwd}/output/apps", "-DCMAKE_PREFIX_PATH={_pwd}/output/bin/riscv/bin/", "-DBUILD_EXAMPLES_ALL=ON", "-DCMAKE_TOOLCHAIN_FILE={_pwd}/{path}/arch/riscv/riscv.cmake"]
   cmd_3: ["__ENV_PATH__{_pwd}/output/bin/riscv/bin/", "make", "-C", "{_pwd}/{path}/cmake"]
+buildroot:
+  cmd_1: ["rm", "-rf", "{_pwd}/output/linux/{_project_name}"]
+  cmd_2: ["make", "-C", "{path}", "distclean"]
+  cmd_3: ["make", "O={_pwd}/output/linux/{_project_name}", "-C", "{path}", "{config}"]
+  cmd_4: ["make", "O={_pwd}/output/linux/{_project_name}", "-C", "{path}"]
+genimage:
+  cmd_1: ["mkdir", "-p", "{_pwd}/output/genimage/tmp/{_project_name}"]
+  cmd_2: ["genimage", "--config", "{path}/{_project_name}.cfg"]

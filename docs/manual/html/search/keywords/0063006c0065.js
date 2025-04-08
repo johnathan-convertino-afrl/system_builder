@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("cle",["Function"],[["clean",,[[,,,,0,"File2:creator.py:clean"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("cle",["Function"],[["clean",,[[,,,,0,"File2:creator.py:clean"]]],["clear",,[["commandCompiler",,,,0,"File:builder.py:commandCompiler.clear","PythonClass:commandCompiler:clear"],["commandExecutor",,,,0,"File:builder.py:commandExecutor.clear","PythonClass:commandExecutor:clear"]]]]);
