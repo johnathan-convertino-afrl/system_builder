@@ -133,11 +133,11 @@ class commandCompiler:
   # Method: create
   # Pass a yaml file to use for processing into format for commandExecutor.
   def create(self, yaml_projects = None, yaml_commands = None, target = None):
-    if(yaml_commands is None and self._yaml_commands is None and self._command_tempate is None):
+    if(yaml_commands is None and self._yaml_commands is None and self._command_template is None):
       logger.error(f"{self.__class__.__name__:<24} : YAML COMMANDS HAS NOT BEEN SET")
       raise TypeError("YAML COMMANDS FILE HAS NOT BEEN SET")
 
-    if(yaml_projects is None and self._yaml_projects is None and self._project_tempate is None):
+    if(yaml_projects is None and self._yaml_projects is None and self._project_template is None):
       logger.error(f"{self.__class__.__name__:<24} : YAML PROJECTS HAS NOT BEEN SET")
       raise TypeError("YAML PROJECTS FILE HAS NOT BEEN SET")
 
@@ -150,21 +150,21 @@ class commandCompiler:
     if(target is not None):
       self._target = target
 
-    logger.debug(f'{self.__class__.__name__:<24} : LOADING YAML COMMANDS FILE {self._yaml_commands.upper()}')
+    logger.debug(f'{self.__class__.__name__:<24} : LOADING YAML COMMANDS FILE {self._yaml_commands.upper() if self._yaml_commands is not None else 'NONE'}')
 
     try:
       if self._command_template is None:
         self._command_template = self._load_yaml(self._yaml_commands)
     except Exception as e: raise
 
-    logger.debug(f'{self.__class__.__name__:<24} : LOADING YAML PROJECTS FILE {self._yaml_projects.upper()}')
+    logger.debug(f'{self.__class__.__name__:<24} : LOADING YAML PROJECTS FILE {self._yaml_projects.upper() if self._yaml_projects is not None else 'NONE'}')
 
     try:
       if self._project_template is None:
         self._project_template = self._load_yaml(self._yaml_projects)
     except Exception as e: raise
 
-    logger.debug(f'{self.__class__.__name__:<24} : CHECKING FOR TARGET {self._target}')
+    logger.debug(f'{self.__class__.__name__:<24} : CHECKING FOR TARGET {self._target if self._target is not None else 'NONE'}')
 
     try:
       self._checkTarget()
@@ -236,6 +236,8 @@ class commandCompiler:
 
             list_command = list(string_command.format_map(command).split(" "))
 
+            list_command = [item.replace(r'{_pwd}', os.getcwd()) for item in list_command]
+
             part_commands.append(list_command)
 
             logger.debug(part_commands)
@@ -272,7 +274,7 @@ class commandCompiler:
 # Class: commandExecutor
 # Execute commands create from commandCompileris not a valid selection
 class commandExecutor:
-  def __init__(self, projects = None, dryrun = False):
+  def __init__(self, projects = None, dryrun = False, progressbar = True):
     self._projects = projects
     self._dryrun = dryrun
     self._failed = False
@@ -282,6 +284,7 @@ class commandExecutor:
     self._items = 0
     self._items_done = 0
     self._project_name = "None"
+    self._progressbar = progressbar
 
     logger.info(f"{self.__class__.__name__:<24} : VERSION {__version__}")
 
@@ -367,9 +370,10 @@ class commandExecutor:
 
       self._project_name = project
 
-      bar_thread = threading.Thread(target=self._bar_thread, name="bar")
+      if self._progressbar:
+        bar_thread = threading.Thread(target=self._bar_thread, name="bar")
 
-      bar_thread.start()
+        bar_thread.start()
 
       for run_type, commands in run_types.items():
         if run_type == 'concurrent':
@@ -405,7 +409,8 @@ class commandExecutor:
           logger.error(f"{self.__class__.__name__:<24} : RUN_TYPE {run_type} IS NOT A VALID SELECTION")
           raise TypeError("INVALID RUNTYPE")
 
-      bar_thread.join()
+      if self._progressbar:
+        bar_thread.join()
 
   # Method: _subprocess
   # Responsible for taking a list of commands and launching threads concurrently
