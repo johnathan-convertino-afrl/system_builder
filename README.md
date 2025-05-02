@@ -21,9 +21,10 @@ license: MIT
 
 ## Version
 ### Current
-  - v0.5.0 - first proper library
+  - v0.5.1 - Fix for error output vs exception(NoneType: None).
 
 ### Past
+  - v0.5.0 - first proper library
   - v0.0.0
 
 ### DOCUMENTATION
