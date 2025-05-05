@@ -412,6 +412,8 @@ class commandExecutor:
       if self._progressbar:
         bar_thread.join()
 
+      logger.info(f"{self.__class__.__name__:<24} : Completed build for project: {project}")
+
   # Method: _subprocess
   # Responsible for taking a list of commands and launching threads concurrently
   # or singurely.
@@ -460,7 +462,7 @@ class commandExecutor:
         logger.error(f"{self.__class__.__name__:<24} : PREVIOUS BUILD PROCESS FAILED, ABORTING : {' '.join(command)}")
         raise RuntimeError("PREVIOUS BUILD FAILED")
 
-      logger.info(f"{self.__class__.__name__:<24} : Executing command: {' '.join(command)}")
+      logger.info(f"{self.__class__.__name__:<24} : Executing Command : {' '.join(command)}")
 
       if self._dryrun is False:
         try:
@@ -471,8 +473,8 @@ class commandExecutor:
           if exception:
             if cmd_error:
               for line in cmd_error.split('\n'):
-                if len(line):
-                  logger.exception(line)
+                if len(line) and isinstance(line, str):
+                  logger.error(line)
             logger.error(f"{self.__class__.__name__:<24} : ISSUE EXECUTING COMMAND : {' '.join(command)}")
             raise RuntimeError("ISSUE EXECUTING COMMAND")
         except Exception as e: raise

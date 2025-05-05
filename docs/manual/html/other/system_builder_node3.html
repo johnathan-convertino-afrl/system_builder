@@ -49,12 +49,47 @@ Introduction</A>
 </H2>
 
 <P>
-System build is a library that will parse a yaml project file, and a yaml command
-file to generate a list of commands to execute in threads. These can be concurrent
-or singular in fashion.
+System builder is a python library that brings other build systems under one execution flow. The idea isn't to replace cmake, fusesoc, or other build systems. Its to glue
+them together in a single scripted process to generate a end result. This allows these parts to be built using systems that make sense for their end goals. Overall the goal
+is to make complete system generation for a Flash chip, SDCARD or other target easier and effortless for the end user.
 
 <P>
-<BR><HR>
+The library has three seperate objects that help with this task. The first is a yaml parser
+that takes two yaml files, and commands and projects file, that are parsed and combined to create a series of dictionaries and nested lists. This data is then given to the executor
+which creates threads that lanuch the commands and monitors them for errors. The last, and unimplimented, is a dependency check object. This will check for all dependencies and
+report if they are installed and how to install them if they are not.
+
+<P>
+The executor will show each target project and have its own current status to show its own progress bar. This shows the time elapsed, percent complete, status, and name of current target being build. This can be
+disabled if needed. One note the progress bar up to the Target name is fixed to 80 columns. Anthing smaller then 80 will fail. Anything over 80 will show more of the target name. Meaning,
+if you have only 80 columns, the target name will be cut off on the screen.
+
+<P>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A
+ HREF="system_builder_node4.html">
+<IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
+<A
+ HREF="system_builder_node2.html">
+<IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
+<A
+ HREF="system_builder_node2.html">
+<IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A> 
+<A ID="tex2html32"
+  HREF="system_builder_node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A
+ HREF="system_builder_node4.html">Dependencies</A>
+<B> Up:</B> <A
+ HREF="system_builder_node2.html">Usage</A>
+<B> Previous:</B> <A
+ HREF="system_builder_node2.html">Usage</A>
+ &nbsp; <B>  <A ID="tex2html33"
+  HREF="system_builder_node1.html">Contents</A></B> </DIV>
+<!--End of Navigation Panel-->
 
 </BODY>
 </HTML>

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.1.27)  8 APR 2025 10:00
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.1.27)  5 MAY 2025 13:18
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -298,9 +298,9 @@ File: img/AFRL.png Graphic file (type png)
 Package pdftex.def Info: img/AFRL.png  used on input line 122.
 (pdftex.def)             Requested size: 310.49771pt x 67.51028pt.
 
-:tex2html_wrap107:lthtmlCropMarkHeight:=73.51028pt
+:tex2html_wrap111:lthtmlCropMarkHeight:=73.51028pt
 
-:tex2html_wrap107:lthtmlCropMarkDepth:=0.0pt:1ex:=4.30554pt
+:tex2html_wrap111:lthtmlCropMarkDepth:=0.0pt:1ex:=4.30554pt
 Preview: Tightpage -32890 -32890 32890 32890
 [1 </home/convertinoj/Projects/PUBLIC/system_builder/docs/manual/img/AFRL.png>]
 (./system_builder_images.aux)

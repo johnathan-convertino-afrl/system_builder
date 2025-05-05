@@ -21,9 +21,10 @@ license: MIT
 
 ## Version
 ### Current
-  - v0.5.0 - first proper library
+  - v0.5.1 - Fix for error output vs exception(NoneType: None).
 
 ### Past
+  - v0.5.0 - first proper library
   - v0.0.0
 
 ### DOCUMENTATION
@@ -47,10 +48,18 @@ license: MIT
   1. pip install --break-system-packages -e .
 
 ### System Builder
-System builder is a python library that will build all target projects in order based on a yaml commands and a yaml projects file. The yaml commands file gives a command and the list of actions to complete that
-command. The yaml projects file contains the steps to build the project using the commands. The library is used by creator python scripts that interact with the end user.
+System builder is a python library that brings other build systems under one execution flow. The idea isn't to replace cmake, fusesoc, or other build systems. Its to glue
+them together in a single scripted process to generate a end result. This allows these parts to be built using systems that make sense for their end goals. Overall the goal
+is to make complete system generation for a Flash chip, SDCARD or other target easier and effortless for the end user.
 
-Each target project will be built with its current status show in its own progress bar. This shows the time elapsed, percent complete, status, and name of current target being build.
+The library has three seperate objects that help with this task. The first is a yaml parser
+that takes two yaml files, and commands and projects file, that are parsed and combined to create a series of dictionaries and nested lists. This data is then given to the executor
+which creates threads that lanuch the commands and monitors them for errors. The last, and unimplimented, is a dependency check object. This will check for all dependencies and
+report if they are installed and how to install them if they are not.
+
+The executor will show each target project and have its own current status to show its own progress bar. This shows the time elapsed, percent complete, status, and name of current target being build. This can be
+disabled if needed. One note the progress bar up to the Target name is fixed to 80 columns. Anthing smaller then 80 will fail. Anything over 80 will show more of the target name. Meaning,
+if you have only 80 columns, the target name will be cut off on the screen.
 
 Example of output to terminal below (formatted to fit this document).
 
@@ -59,9 +68,9 @@ Example of output to terminal below (formatted to fit this document).
 ```
 Starting build system targets...
 
-[0:13:23] 100% |████████████████| Status: SUCCESS  | Target: zed_fmcomms2-3_linux_busybox_sdcard
-[0:13:37] 100% |████████████████| Status: SUCCESS  | Target: zc702_fmcomms2-3_linux_busybox_sdcard
-[0:13:38] 100% |████████████████| Status: SUCCESS  | Target: zc706_fmcomms2-3_linux_busybox_sdcard
+[0:13:23] 100% |##################| Status: SUCCESS  | Target: zed_fmcomms2-3_linux_busybox_sdcard
+[0:13:37] 100% |##################| Status: SUCCESS  | Target: zc702_fmcomms2-3_linux_busybox_sdcard
+[0:13:38] 100% |##################| Status: SUCCESS  | Target: zc706_fmcomms2-3_linux_busybox_sdcard
 
 Completed build system targets.
 ```
@@ -71,7 +80,7 @@ Completed build system targets.
 ```
 Starting build system targets...
 
- [0:26:36]  85% |█████████▓    | Status:  ERROR   | Target: zcu102_fmcomms5_linux_busybox_sdcard
+ [0:26:36]  85% |############    | Status:  ERROR   | Target: zcu102_fmcomms5_linux_busybox_sdcard
 
 ERROR: build system failure, see log file log/240513_1715617815.log.
 ```
